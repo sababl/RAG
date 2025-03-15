@@ -24,12 +24,13 @@ db.add(documents=chunks, ids=[str(i) for i in range(len(chunks))])
 
 print("db count", db.count())
 
-
+#--------------------------------retriever-------------------------------
+passages = []
 try:
     embed_fn.document_mode = False
-    query = "What is the difference between a function and a method?"
+    question = "What is the difference between a function and a method?"
     results = db.query(
-        query_texts=[query],
+        query_texts=[question],
         n_results=3
     )
     
@@ -38,6 +39,24 @@ try:
     for i, passage in enumerate(results["documents"][0], 1):
         print(f"\nPassage {i}:")
         print(passage)
+        passages.append(passage)
 
 except Exception as e:
     print(f"Error during query: {str(e)}")
+
+
+#--------------------------------generator-------------------------------
+prompt = f"""
+You are an expert Python programming assistant.  
+Answer the user's question clearly, accurately, and concisely based **only** on the provided context.  
+If the context doesn't contain the necessary information, reply "I'm sorry, I couldn't find relevant information in the provided context."
+
+Question: {question}
+
+Context: {passages}
+"""
+
+model = genai.GenerativeModel("gemini-1.5-flash-latest")
+answer = model.generate_content(prompt)
+
+print(f"\nAnswer: {answer.text}")
