@@ -1,6 +1,7 @@
 from chromadb import Documents, EmbeddingFunction, Embeddings
 from google.api_core import retry
 import google.generativeai as genai
+import fitz
 
 
 class GeminiEmbeddingFunction(EmbeddingFunction):
@@ -23,4 +24,31 @@ class GeminiEmbeddingFunction(EmbeddingFunction):
         )
         return response["embedding"]
 
-import chromadb
+
+def extract_text_from_pdf(pdf_path):
+    text = ""
+    with fitz.open(pdf_path) as doc:
+        for page in doc:
+            text += page.get_text()
+    return text
+
+
+def chunk_text(text, chunk_size=500, overlap=50):
+    sentences = [s.strip() for s in text.split(".") if s.strip()]
+    chunks = []
+    chunk = ""
+    for sentence in sentences:
+        current_sentence = sentence + "."
+
+        if len(chunk) + len(sentence) < chunk_size:
+            chunk += sentence + ". "
+        else:
+            if chunk.strip(): 
+                chunks.append(chunk.strip())
+            words = chunk.split()
+            overlap_text = " ".join(words[-overlap:]) if len(words) > overlap else ""
+            chunk = overlap_text + " " + current_sentence + " "
+
+    if chunk.strip():
+        chunks.append(chunk.strip())
+    return chunks
