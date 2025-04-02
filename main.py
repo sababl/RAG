@@ -12,7 +12,7 @@ genai.configure(api_key=GOOGLE_API_KEY)
 content = extract_text_from_pdf("thinkpython2.pdf")
 chunks = chunk_text(content)
 
-DB_NAME = "googlecardb"
+DB_NAME = "pythonDocDB"
 
 embed_fn = GeminiEmbeddingFunction()
 embed_fn.document_mode = True
@@ -25,38 +25,24 @@ db.add(documents=chunks, ids=[str(i) for i in range(len(chunks))])
 print("db count", db.count())
 
 #--------------------------------retriever-------------------------------
-passages = []
-try:
-    embed_fn.document_mode = False
-    question = "What is the difference between a function and a method?"
-    results = db.query(
-        query_texts=[question],
-        n_results=3
-    )
-    
-    # Print all retrieved passages
-    print("\nRelevant passages:")
-    for i, passage in enumerate(results["documents"][0], 1):
-        print(f"\nPassage {i}:")
-        print(passage)
-        passages.append(passage)
+def answer_question(user_question: str) -> str:
+    try:
+        embed_fn.document_mode = False
+        results = db.query(query_texts=[user_question], n_results=3)
+        passages = results["documents"][0]
+    except Exception as e:
+        return f"Error during query: {str(e)}"
 
-except Exception as e:
-    print(f"Error during query: {str(e)}")
+    prompt = f"""
+    You are an expert Python programming assistant.
+    Answer the user's question clearly, accurately, and concisely based **only** on the provided context.
+    If the context doesn't contain the necessary information, reply "I'm sorry, I couldn't find relevant information in the provided context."
 
+    Question: {user_question}
 
-#--------------------------------generator-------------------------------
-prompt = f"""
-You are an expert Python programming assistant.  
-Answer the user's question clearly, accurately, and concisely based **only** on the provided context.  
-If the context doesn't contain the necessary information, reply "I'm sorry, I couldn't find relevant information in the provided context."
+    Context: {passages}
+    """
 
-Question: {question}
-
-Context: {passages}
-"""
-
-model = genai.GenerativeModel("gemini-1.5-flash-latest")
-answer = model.generate_content(prompt)
-
-print(f"\nAnswer: {answer.text}")
+    model = genai.GenerativeModel("gemini-1.5-flash-latest")
+    response = model.generate_content(prompt)
+    return response.text
