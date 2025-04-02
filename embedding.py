@@ -1,8 +1,8 @@
+from typing import List
 from chromadb import Documents, EmbeddingFunction, Embeddings
 from google.api_core import retry
 import google.generativeai as genai
 import fitz
-from typing import List
 
 
 class GeminiEmbeddingFunction(EmbeddingFunction):
@@ -12,6 +12,7 @@ class GeminiEmbeddingFunction(EmbeddingFunction):
     Attributes:
         document_mode (bool): If True, embeddings are generated for documents; otherwise, for queries.
     """
+
     def __init__(self, document_mode: bool = True) -> None:
         self.document_mode = document_mode
 
@@ -75,7 +76,7 @@ def chunk_text(text: str, chunk_size: int = 500, overlap: int = 50) -> List[str]
     Returns:
         List[str]: A list of text chunks.
     """
-    sentences = [sentence.strip() for sentence in text.split('.') if sentence.strip()]
+    sentences = [sentence.strip() for sentence in text.split(".") if sentence.strip()]
     chunks = []
     current_chunk = ""
 
@@ -88,7 +89,9 @@ def chunk_text(text: str, chunk_size: int = 500, overlap: int = 50) -> List[str]
                 chunks.append(current_chunk.strip())
             # Compute overlap from the current chunk
             words = current_chunk.split()
-            overlap_text = " ".join(words[-overlap:]) if len(words) > overlap else current_chunk
+            overlap_text = (
+                " ".join(words[-overlap:]) if len(words) > overlap else current_chunk
+            )
             current_chunk = overlap_text + " " + sentence_with_period + " "
 
     if current_chunk.strip():
