@@ -20,7 +20,7 @@ A Retrieval-Augmented Generation (RAG) system that answers Python programming qu
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/RAG.git
+git clone https://github.com/sababl/RAG
 cd RAG
 ```
 
