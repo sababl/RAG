@@ -1,22 +1,22 @@
-"""
-Main module for Python RAG system using Gemini and ChromaDB.
-Handles document processing, embedding, and question answering.
-"""
-
 import os
 from typing import List, Optional
 
 import google.generativeai as genai
 import chromadb
+from chromadb.config import Settings
+
 from dotenv import load_dotenv
 
 from embedding import GeminiEmbeddingFunction, extract_text_from_pdf, chunk_text
 
 # Constants
-DB_NAME = "pythonDocDB"
-MODEL_NAME = "gemini-1.5-flash-latest"
-PDF_PATH = "thinkpython2.pdf"
+PDF_FOLDER = "docs-pdf"
+DB_NAME = "pydocs_db"
+
 N_RESULTS = 3
+MODEL_NAME = "gemini-1.5-flash-latest"
+
+doc_id_counter = 0 
 
 def init_environment() -> None:
     """Initialize environment variables and API configuration."""
@@ -26,32 +26,61 @@ def init_environment() -> None:
         raise EnvironmentError("GOOGLE_API_KEY not found in environment variables")
     genai.configure(api_key=api_key)
 
-def setup_database(content: List[str]) -> chromadb.Collection:
+
+def setup_database_from_folder(folder_path: str) -> chromadb.Collection:
     """
-    Set up and populate ChromaDB with document chunks.
+    Process all PDFs in a folder, chunk their content, and populate ChromaDB.
 
     Args:
-        content (List[str]): List of text chunks to store
+        folder_path (str): Path to the folder containing PDF files.
 
     Returns:
-        chromadb.Collection: Configured database collection
+        chromadb.Collection: Configured database collection.
     """
+    all_chunks = []
+    all_ids = []
+
+    for filename in os.listdir(folder_path):
+        if filename.endswith(".pdf"):
+            pdf_path = os.path.join(folder_path, filename)
+            print(f"Processing {pdf_path}...")
+
+            try:
+                text = extract_text_from_pdf(pdf_path)
+                chunks = chunk_text(text)
+                if chunks:
+                    # Generate a unique ID for each chunk from this file
+                    ids = [f"{filename}_{i}" for i in range(len(chunks))]
+                    all_chunks.extend(chunks)
+                    all_ids.extend(ids)
+
+                print(f"Extracted {len(chunks)} chunks from {filename}")
+            except Exception as e:
+                print(f"Failed to process {filename}: {e}")
+
+    return setup_database(all_chunks, all_ids)
+
+
+def setup_database(content: List[str], ids: List[str]) -> chromadb.Collection:
     embed_fn = GeminiEmbeddingFunction()
     embed_fn.document_mode = True
 
-    client = chromadb.Client()
-    db = client.get_or_create_collection(
-        name=DB_NAME,
-        embedding_function=embed_fn
-    )
+    client = chromadb.PersistentClient(path="./chroma_storage")
 
-    # Add documents if collection is empty
+    db = client.get_or_create_collection(name="pydocs_db", embedding_function=embed_fn)
+
     if db.count() == 0:
-        db.add(
-            documents=content,
-            ids=[str(i) for i in range(len(content))]
-        )
-        print(f"Added {db.count()} documents to database")
+        if len(content) != len(ids):
+            raise ValueError(f"Document count ({len(content)}) does not match ID count ({len(ids)})")
+
+        print(f"Adding {len(content)} documents in batches...")
+
+        batch_size = 40000  # safely below ChromaDB limit
+        for i in range(0, len(content), batch_size):
+            chunk = content[i:i + batch_size]
+            chunk_ids = ids[i:i + batch_size]
+            db.add(documents=chunk, ids=chunk_ids)
+            print(f"Added batch {i // batch_size + 1} ({len(chunk)} items)")
     
     return db
 
@@ -106,12 +135,5 @@ def answer_question(user_question: str) -> str:
         return f"Error processing question: {str(e)}"
 
 # Initialize system
-try:
-    init_environment()
-    content = extract_text_from_pdf(PDF_PATH)
-    chunks = chunk_text(content)
-    db = setup_database(chunks)
-
-except Exception as e:
-    print(f"Error initializing system: {str(e)}")
-    raise
+init_environment()
+db = setup_database_from_folder(PDF_FOLDER)

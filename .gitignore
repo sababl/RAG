@@ -1,5 +1,6 @@
 .venv/
-
+.vscode/
+chroma_storage/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
