@@ -5533,6 +5533,43 @@ venv
 
 
 "
+How do I count the occurrences of a list item?,"If you only want a single item's count, use the 
+count
+ method:
+
+
+>>> [1, 2, 3, 4, 1, 4, 1].count(1)
+3
+
+
+
+
+
+Important: this is very slow if you are counting 
+multiple
+ different items
+
+
+Each 
+count
+ call goes over the entire list of 
+n
+ elements. Calling 
+count
+ in a loop 
+n
+ times means 
+n * n
+ total checks, which can be catastrophic for performance.
+
+
+If you want to count multiple items, use 
+Counter
+, which only does 
+n
+ total checks.
+
+"
 Determine the type of an object?,"There are two built-in functions that help you identify the type of an object. You can use 
 type()
   if you need the exact type of an object, and 
@@ -5626,43 +5663,6 @@ isinstance
 >>> isinstance([], (tuple, list, set))
 True
 
-
-"
-How do I count the occurrences of a list item?,"If you only want a single item's count, use the 
-count
- method:
-
-
->>> [1, 2, 3, 4, 1, 4, 1].count(1)
-3
-
-
-
-
-
-Important: this is very slow if you are counting 
-multiple
- different items
-
-
-Each 
-count
- call goes over the entire list of 
-n
- elements. Calling 
-count
- in a loop 
-n
- times means 
-n * n
- total checks, which can be catastrophic for performance.
-
-
-If you want to count multiple items, use 
-Counter
-, which only does 
-n
- total checks.
 
 "
 How to check if the string is empty in Python?,"Empty strings are ""falsy"" (
@@ -5816,5 +5816,5871 @@ Kivy runs on Linux, Windows, OS X, Android and iOS. You can run the same [python
 
 Kivy Showcase app
  
+
+"
+Static methods in Python?,"Yep, using the 
+staticmethod
+ decorator:
+
+
+class MyClass(object):
+    @staticmethod
+    def the_static_method(x):
+        print(x)
+
+MyClass.the_static_method(2)  # outputs 2
+
+
+
+Note that some code might use the old method of defining a static method, using 
+staticmethod
+ as a function rather than a decorator. This should only be used if you have to support ancient versions of Python (2.2 and 2.3):
+
+
+class MyClass(object):
+    def the_static_method(x):
+        print(x)
+    the_static_method = staticmethod(the_static_method)
+
+MyClass.the_static_method(2)  # outputs 2
+
+
+
+This is entirely identical to the first example (using 
+@staticmethod
+), just not using the nice decorator syntax.
+
+
+Finally, use 
+staticmethod
+ sparingly! There are very few situations where static-methods are necessary in Python, and I've seen them used many times where a separate ""top-level"" function would have been clearer.
+
+
+
+
+The following is verbatim from the documentation:
+:
+
+
+
+
+A static method does not receive an implicit first argument. To declare a static method, use this idiom:
+
+
+class C:
+    @staticmethod
+    def f(arg1, arg2, ...): ...
+
+
+
+The @staticmethod form is a function 
+decorator
+ – see the description of function definitions in 
+Function definitions
+ for details.
+
+
+It can be called either on the class (such as 
+C.f()
+) or on an instance (such as 
+C().f()
+). The instance is ignored except for its class.
+
+
+Static methods in Python are similar to those found in Java or C++. For a more advanced concept, see 
+classmethod()
+.
+
+
+For more information on static methods, consult the documentation on the standard type hierarchy in 
+The standard type hierarchy
+.
+
+
+New in version 2.2.
+
+
+Changed in version 2.4: Function decorator syntax added.
+
+
+
+"
+Installing specific package version with pip,"TL;DR
+:
+
+
+Update as of 2022-12-28
+:
+
+
+pip install --force-reinstall -v
+
+
+For example: 
+pip install --force-reinstall -v ""MySQL_python==1.2.2""
+
+
+What these options mean:
+
+
+
+
+--force-reinstall
+ is an option to reinstall all packages even if they are already up-to-date.
+
+
+-v
+ is for verbose. You can combine for even more verbosity (i.e. 
+-vv
+) up to 3 times (e.g. 
+--force-reinstall -vvv
+).
+
+
+
+
+Thanks to 
+@Peter
+ for highlighting this (and it seems that the context of the question has broadened given the time when the question was first asked!), 
+the documentation for Python
+ discusses a caveat with using 
+-I
+, in that it can break your installation if it was installed with a different package manager or if if your package is/was a different version.
+
+
+
+
+Original answer:
+
+
+
+
+pip install -Iv
+ (i.e. 
+pip install -Iv MySQL_python==1.2.2
+)
+
+
+
+
+
+
+What these options mean:
+
+
+
+
+-I
+ stands for 
+--ignore-installed
+ which will ignore the installed packages, overwriting them.
+
+
+-v
+ is for verbose. You can combine for even more verbosity (i.e. 
+-vv
+) up to 3 times (e.g. 
+-Ivvv
+).
+
+
+
+
+For more information, see 
+pip install --help
+
+
+First, I see two issues with what you're trying to do. Since you already have an installed version, you should either uninstall the current existing driver or use 
+pip install -I MySQL_python==1.2.2
+
+
+However, you'll soon find out that this doesn't work. If you look at pip's installation log, or if you do a 
+pip install -Iv MySQL_python==1.2.2
+ you'll find that the PyPI URL link does not work for MySQL_python v1.2.2. You can verify this here: 
+http://pypi.python.org/pypi/MySQL-python/1.2.2
+
+
+The download link 404s and the fallback URL links are re-directing infinitely due to sourceforge.net's recent upgrade and PyPI's stale URL.
+
+
+So to properly install the driver, you can follow these steps:
+
+
+pip uninstall MySQL_python
+pip install -Iv http://sourceforge.net/projects/mysql-python/files/mysql-python/1.2.2/MySQL-python-1.2.2.tar.gz/download
+
+
+"
+How do I split the definition of a long string over multiple lines?,"Are you talking about multi-line strings? Easy, use triple quotes to start and end them.
+
+
+s = """""" this is a very
+        long string if I had the
+        energy to type more and more ...""""""
+
+
+
+You can use single quotes too (3 of them of course at start and end) and treat the resulting string 
+s
+ just like any other string.
+
+
+NOTE
+: Just as with any string, anything between the starting and ending quotes becomes part of the string, so this example has a leading blank (as pointed out by @root45). This string will also contain both blanks and newlines.
+
+
+I.e.,:
+
+
+' this is a very\n        long string if I had the\n        energy to type more and more ...'
+
+
+
+Finally, one can also construct long lines in Python like this:
+
+
+ s = (""this is a very""
+      ""long string too""
+      ""for sure ...""
+     )
+
+
+
+which will 
+not
+ include any extra blanks or newlines (this is a deliberate example showing what the effect of skipping blanks will result in):
+
+
+'this is a verylong string toofor sure ...'
+
+
+
+No commas required, simply place the strings to be joined together into a pair of parenthesis and be sure to account for any needed blanks and newlines.
+
+"
+How to prettyprint a JSON file?,"Use the 
+indent=
+ parameter of 
+json.dump()
+ or 
+json.dumps()
+ to specify how many spaces to indent by:
+
+
+>>> import json
+>>> your_json = '[""foo"", {""bar"": [""baz"", null, 1.0, 2]}]'
+>>> parsed = json.loads(your_json)
+>>> print(json.dumps(parsed, indent=4))
+[
+    ""foo"",
+    {
+        ""bar"": [
+            ""baz"",
+            null,
+            1.0,
+            2
+        ]
+    }
+]
+
+
+
+To parse a file, use 
+json.load()
+:
+
+
+with open('filename.txt', 'r') as handle:
+    parsed = json.load(handle)
+
+
+"
+Getting the class name of an instance,"Have you tried the 
+__name__
+ attribute
+ of the class? ie 
+type(x).__name__
+ will give you the name of the class, which I think is what you want.
+
+
+>>> import itertools
+>>> x = itertools.count(0)
+>>> type(x).__name__
+'count'
+
+
+
+If you're still using Python 2, note that the above method works with 
+new-style classes
+ only (in Python 3+ all classes are ""new-style"" classes). Your code might use some old-style classes. The following works for both:
+
+
+x.__class__.__name__
+
+
+"
+How do I check if a string represents a number (float or int)?,"
+
+Which, not only is ugly and slow
+
+
+
+
+I'd dispute both.
+
+
+A regex or other string parsing method would be uglier and slower.  
+
+
+I'm not sure that anything much could be faster than the above.  It calls the function and returns.  Try/Catch doesn't introduce much overhead because the most common exception is caught without an extensive search of stack frames.
+
+
+The issue is that any numeric conversion function has two kinds of results
+
+
+
+
+A number, if the number is valid
+
+
+A status code (e.g., via errno) or exception to show that no valid number could be parsed.
+
+
+
+
+C (as an example) hacks around this a number of ways.  Python lays it out clearly and explicitly.
+
+
+I think your code for doing this is perfect.
+
+"
+How do I get the row count of a Pandas DataFrame?,"For a dataframe 
+df
+, one can use any of the following:
+
+
+
+
+len(df.index)
+
+
+df.shape[0]
+
+
+df[df.columns[0]].count()
+ (== 
+number of non-NaN values
+ in first column)
+
+
+
+
+
+
+
+
+Code to reproduce the plot:
+
+
+import numpy as np
+import pandas as pd
+import perfplot
+
+perfplot.save(
+    ""out.png"",
+    setup=lambda n: pd.DataFrame(np.arange(n * 3).reshape(n, 3)),
+    n_range=[2**k for k in range(25)],
+    kernels=[
+        lambda df: len(df.index),
+        lambda df: df.shape[0],
+        lambda df: df[df.columns[0]].count(),
+    ],
+    labels=[""len(df.index)"", ""df.shape[0]"", ""df[df.columns[0]].count()""],
+    xlabel=""Number of rows"",
+)
+
+
+"
+Meaning of @classmethod and @staticmethod for beginner,"Though 
+classmethod
+ and 
+staticmethod
+ are quite similar, there's a slight difference in usage for both entities: 
+classmethod
+ must have a reference to a class object as the first parameter, whereas 
+staticmethod
+ can have no parameters at all.
+
+
+Example
+
+
+class Date(object):
+    
+    def __init__(self, day=0, month=0, year=0):
+        self.day = day
+        self.month = month
+        self.year = year
+
+    @classmethod
+    def from_string(cls, date_as_string):
+        day, month, year = map(int, date_as_string.split('-'))
+        date1 = cls(day, month, year)
+        return date1
+
+    @staticmethod
+    def is_date_valid(date_as_string):
+        day, month, year = map(int, date_as_string.split('-'))
+        return day <= 31 and month <= 12 and year <= 3999
+
+date2 = Date.from_string('11-09-2012')
+is_date = Date.is_date_valid('11-09-2012')
+
+
+
+Explanation
+
+
+Let's assume an example of a class, dealing with date information (this will be our boilerplate):
+
+
+class Date(object):
+    
+    def __init__(self, day=0, month=0, year=0):
+        self.day = day
+        self.month = month
+        self.year = year
+
+
+
+This class obviously could be used to store information about certain dates (without timezone information; let's assume all dates are presented in UTC).
+
+
+Here we have 
+__init__
+, a typical initializer of Python class instances, which receives arguments as a typical instance method, having the first non-optional argument (
+self
+) that holds a reference to a newly created instance.
+
+
+Class Method
+
+
+We have some tasks that can be nicely done using 
+classmethod
+s.
+
+
+Let's assume that we want to create a lot of 
+Date
+ class instances having date information coming from an outer source encoded as a string with format 'dd-mm-yyyy'. Suppose we have to do this in different places in the source code of our project.
+
+
+So what we must do here is:
+
+
+
+
+Parse a string to receive day, month and year as three integer variables or a 3-item tuple consisting of that variable.
+
+
+Instantiate 
+Date
+ by passing those values to the initialization call.
+
+
+
+
+This will look like:
+
+
+day, month, year = map(int, string_date.split('-'))
+date1 = Date(day, month, year)
+
+
+
+For this purpose, C++ can implement such a feature with overloading, but Python lacks this overloading. Instead, we can use 
+classmethod
+. Let's create another 
+constructor
+.
+
+
+    @classmethod
+    def from_string(cls, date_as_string):
+        day, month, year = map(int, date_as_string.split('-'))
+        date1 = cls(day, month, year)
+        return date1
+
+date2 = Date.from_string('11-09-2012')
+
+
+
+Let's look more carefully at the above implementation, and review what advantages we have here:
+
+
+
+
+We've implemented date string parsing in one place and it's reusable now.
+
+
+Encapsulation works fine here (if you think that you could implement string parsing as a single function elsewhere, this solution fits the OOP paradigm far better).
+
+
+cls
+ is the 
+class itself
+, not an instance of the class. It's pretty cool because if we inherit our 
+Date
+ class, all children will have 
+from_string
+ defined also.
+
+
+
+
+Static method
+
+
+What about 
+staticmethod
+? It's pretty similar to 
+classmethod
+ but doesn't take any obligatory parameters (like a class method or instance method does).
+
+
+Let's look at the next use case.
+
+
+We have a date string that we want to validate somehow. This task is also logically bound to the 
+Date
+ class we've used so far, but doesn't require instantiation of it.
+
+
+Here is where 
+staticmethod
+ can be useful. Let's look at the next piece of code:
+
+
+    @staticmethod
+    def is_date_valid(date_as_string):
+        day, month, year = map(int, date_as_string.split('-'))
+        return day <= 31 and month <= 12 and year <= 3999
+
+# usage:
+is_date = Date.is_date_valid('11-09-2012')
+
+
+
+So, as we can see from usage of 
+staticmethod
+, we don't have any access to what the class is---it's basically just a function,  called syntactically like a method, but without access to the object and its internals (fields and other methods), which 
+classmethod
+ does have.
+
+"
+What's the canonical way to check for type in Python?,"Use 
+isinstance
+ to check if 
+o
+ is an instance of 
+str
+ or any subclass of 
+str
+:
+
+
+if isinstance(o, str):
+
+
+
+To check if the type of 
+o
+ is exactly 
+str
+, 
+excluding subclasses of 
+str
+:
+
+
+if type(o) is str:
+
+
+
+See 
+Built-in Functions
+ in the Python Library Reference for relevant information.
+
+
+
+
+Checking for strings in Python 2
+
+
+For Python 2, this is a better way to check if 
+o
+ is a string:
+
+
+if isinstance(o, basestring):
+
+
+
+because this will also catch Unicode strings. 
+unicode
+ is not a subclass of 
+str
+; both 
+str
+ and 
+unicode
+ are subclasses of 
+basestring
+. In Python 3, 
+basestring
+ no longer exists since there's 
+a strict separation
+ of strings (
+str
+) and binary data (
+bytes
+).
+
+
+Alternatively, 
+isinstance
+ accepts a tuple of classes. This will return 
+True
+ if 
+o
+ is an instance of any subclass of any of 
+(str, unicode)
+:
+
+
+if isinstance(o, (str, unicode)):
+
+
+"
+Proper way to declare custom exceptions in modern Python?,"Maybe I missed the question, but why not:
+
+
+class MyException(Exception):
+    pass
+
+
+
+To override something (or pass extra args), do this:
+
+
+class ValidationError(Exception):
+    def __init__(self, message, errors):            
+        # Call the base class constructor with the parameters it needs
+        super().__init__(message)
+            
+        # Now for your custom code...
+        self.errors = errors
+
+
+
+That way you could pass dict of error messages to the second param, and get to it later with 
+e.errors
+.
+
+
+In Python 2, you have to use this slightly more complex form of 
+super()
+:
+
+
+super(ValidationError, self).__init__(message)
+
+
+"
+How can I install packages using pip according to the requirements.txt file from a local directory?,"This works for me:
+
+
+$ pip install -r requirements.txt --no-index --find-links file:///tmp/packages
+
+
+
+--no-index
+ - Ignore package index (only look at 
+--find-links
+ URLs instead).
+
+
+-f, --find-links 
+ - If 
+ is a URL or a path to an HTML file, then parse for links to archives. If 
+ is a local path or a 
+file://
+ URL that's a directory, then look for archives in the directory listing.
+
+"
+Generate random integers between 0 and 9,"Try 
+random.randrange
+:
+
+
+from random import randrange
+print(randrange(10))
+
+
+"
+fatal error: Python.h: No such file or directory,"I managed to solve this issue and generate the .so file in one command 
+
+
+gcc -shared -o UtilcS.so
+-fPIC -I/usr/include/python2.7 -lpython2.7  utilsmodule.c
+
+
+"
+What is the meaning of single and double underscore before an object name?,"Single Underscore
+
+
+In a class, names with a leading underscore indicate to other programmers that the attribute or method is intended to be be used inside that class. However, privacy is not 
+enforced
+ in any way.
+Using leading underscores for functions in a module indicates it should not be imported from somewhere else.
+
+
+From the 
+PEP-8
+ style guide:
+
+
+
+
+_single_leading_underscore
+: weak ""internal use"" indicator. E.g. 
+from M import *
+ does not import objects whose name starts with an underscore.
+
+
+
+
+Double Underscore (Name Mangling)
+
+
+From 
+the Python docs
+:
+
+
+
+
+Any identifier of the form 
+__spam
+ (at least two leading underscores, at most one trailing underscore) is textually replaced with 
+_classname__spam
+, where 
+classname
+ is the current class name with leading underscore(s) stripped. This mangling is done without regard to the syntactic position of the identifier, so it can be used to define class-private instance and class variables, methods, variables stored in globals, and even variables stored in instances. private to this class on instances of other classes.
+
+
+
+
+And a warning from the same page:
+
+
+
+
+Name mangling is intended to give classes an easy way to define “private” instance variables and methods, without having to worry about instance variables defined by derived classes, or mucking with instance variables by code outside the class. Note that the mangling rules are designed mostly to avoid accidents; 
+it still is possible for a determined soul to access or modify a variable that is considered private.
+
+
+
+
+Example
+
+
+>>> class MyClass():
+...     def __init__(self):
+...             self.__superprivate = ""Hello""
+...             self._semiprivate = "", world!""
+...
+>>> mc = MyClass()
+>>> print mc.__superprivate
+Traceback (most recent call last):
+  File ""
+"", line 1, in 
+
+AttributeError: myClass instance has no attribute '__superprivate'
+>>> print mc._semiprivate
+, world!
+>>> print mc.__dict__
+{'_MyClass__superprivate': 'Hello', '_semiprivate': ', world!'}
+
+
+"
+Relative imports for the billionth time,"Script vs. Module
+
+
+Here's an explanation.  The short version is that there is a big difference between directly running a Python file, and importing that file from somewhere else.  
+Just knowing what directory a file is in does not determine what package Python thinks it is in.
+  That depends, additionally, on how you load the file into Python (by running or by importing).
+
+
+There are two ways to load a Python file: as the top-level script, or as a
+module.  A file is loaded as the top-level script if you execute it directly, for instance by typing 
+python myfile.py
+ on the command line.  It is loaded as a module when an 
+import
+ statement is encountered inside some other file.  There can only be one top-level script at a time; the top-level script is the Python file you ran to start things off.
+
+
+Naming
+
+
+When a file is loaded, it is given a name (which is stored in its 
+__name__
+ attribute).  If it was loaded as the top-level script, its name is 
+__main__
+.  If it was loaded as a module, its name is the filename, preceded by the names of any packages/subpackages of which it is a part, separated by dots.
+
+
+So for instance in your example:
+
+
+package/
+    __init__.py
+    subpackage1/
+        __init__.py
+        moduleX.py
+    moduleA.py
+
+
+
+if you imported 
+moduleX
+ (note: 
+imported
+, not directly executed), its name would be 
+package.subpackage1.moduleX
+.  If you imported 
+moduleA
+, its name would be 
+package.moduleA
+.  However, if you 
+directly run
+ 
+moduleX
+ from the command line, its name will instead be 
+__main__
+, and if you directly run 
+moduleA
+ from the command line, its name will be 
+__main__
+.  When a module is run as the top-level script, it loses its normal name and its name is instead 
+__main__
+.
+
+
+Accessing a module NOT through its containing package
+
+
+There is an additional wrinkle: the module's name depends on whether it was imported ""directly"" from the directory it is in or imported via a package.  This only makes a difference if you run Python in a directory, and try to import a file in that same directory (or a subdirectory of it).  For instance, if you start the Python interpreter in the directory 
+package/subpackage1
+ and then do 
+import moduleX
+, the name of 
+moduleX
+ will just be 
+moduleX
+, and not 
+package.subpackage1.moduleX
+.  This is because Python adds the current directory to its search path when the interpreter is entered interactively; if it finds the to-be-imported module in the current directory, it will not know that that directory is part of a package, and the package information will not become part of the module's name.
+
+
+A special case is if you run the interpreter interactively (e.g., just type 
+python
+ and start entering Python code on the fly).  In this case, the name of that interactive session is 
+__main__
+.
+
+
+Now here is the crucial thing for your error message: 
+if a module's name has no dots, it is not considered to be part of a package
+.  It doesn't matter where the file actually is on disk.  All that matters is what its name is, and its name depends on how you loaded it.
+
+
+Now look at the quote you included in your question:
+
+
+
+
+Relative imports use a module's name attribute to determine that module's position in the package hierarchy. If the module's name does not contain any package information (e.g. it is set to 'main') then relative imports are resolved as if the module were a top-level module, regardless of where the module is actually located on the file system.
+
+
+
+
+Relative imports...
+
+
+Relative imports use the module's 
+name
+ to determine where it is in a package.  When you use a relative import like 
+from .. import foo
+, the dots indicate to step up some number of levels in the package hierarchy.  For instance, if your current module's name is 
+package.subpackage1.moduleX
+, then 
+..moduleA
+ would mean 
+package.moduleA
+.  For a 
+from .. import
+ to work, the module's name must have at least as many dots as there are in the 
+import
+ statement.
+
+
+... are only relative in a package
+
+
+However, if your module's name is 
+__main__
+, it is not considered to be in a package.  Its name has no dots, and therefore you cannot use 
+from .. import
+ statements inside it.  If you try to do so, you will get the ""relative-import in non-package"" error.
+
+
+Scripts can't import relative
+
+
+What you probably did is you tried to run 
+moduleX
+ or the like from the command line.  When you did this, its name was set to 
+__main__
+, which means that relative imports within it will fail, because its name does not reveal that it is in a package. Note that this will also happen if you run Python from the same directory where a module is, and then try to import that module, because, as described above, Python will find the module in the current directory ""too early"" without realizing it is part of a package.
+
+
+Also remember that when you run the interactive interpreter, the ""name"" of that interactive session is always 
+__main__
+.  Thus 
+you cannot do relative imports directly from an interactive session
+.  Relative imports are only for use within module files.
+
+
+Two solutions:
+
+
+
+
+If you really do want to run 
+moduleX
+ directly, but you still want it to be considered part of a package, you can do 
+python -m package.subpackage1.moduleX
+.  The 
+-m
+ tells Python to load it as a module, not as the top-level script.
+
+
+
+
+Or perhaps you don't actually want to 
+run
+ 
+moduleX
+, you just want to run some other script, say 
+myfile.py
+, that 
+uses
+ functions inside 
+moduleX
+.  If that is the case, put 
+myfile.py
+ 
+somewhere else
+ – 
+not
+ inside the 
+package
+ directory – and run it.  If inside 
+myfile.py
+ you do things like 
+from package.moduleA import spam
+, it will work fine.
+
+
+
+
+
+
+Notes
+
+
+
+
+For either of these solutions, the package directory (
+package
+ in your example) must be accessible from the Python module search path (
+sys.path
+).  If it is not, you will not be able to use anything in the package reliably at all.
+
+
+
+
+Since Python 2.6, the module's ""name"" for package-resolution purposes is determined not just by its 
+__name__
+ attributes but also by the 
+__package__
+ attribute.  That's why I'm avoiding using the explicit symbol 
+__name__
+ to refer to the module's ""name"".  Since Python 2.6 a module's ""name"" is effectively 
+__package__ + '.' + __name__
+, or just 
+__name__
+ if 
+__package__
+ is 
+None
+.)
+
+
+
+
+
+"
+Extracting extension from filename,"Use 
+os.path.splitext
+:
+
+
+>>> import os
+>>> filename, file_extension = os.path.splitext('/path/to/somefile.ext')
+>>> filename
+'/path/to/somefile'
+>>> file_extension
+'.ext'
+
+
+
+Unlike most manual string-splitting attempts, 
+os.path.splitext
+ will correctly treat 
+/a/b.c/d
+ as having no extension instead of having extension 
+.c/d
+, and it will treat 
+.bashrc
+ as having no extension instead of having extension 
+.bashrc
+:
+
+
+>>> os.path.splitext('/a/b.c/d')
+('/a/b.c/d', '')
+>>> os.path.splitext('.bashrc')
+('.bashrc', '')
+
+
+"
+How do I write JSON data to a file?,"data
+ is a Python dictionary. It needs to be encoded as JSON before writing.
+
+
+Use this for maximum compatibility (Python 2 and 3):
+
+
+import json
+with open('data.json', 'w') as f:
+    json.dump(data, f)
+
+
+
+On a modern system (i.e. Python 3 and UTF-8 support), you can write a nicer file using:
+
+
+import json
+with open('data.json', 'w', encoding='utf-8') as f:
+    json.dump(data, f, ensure_ascii=False, indent=4)
+
+
+
+See 
+json
+ documentation.
+
+"
+How can I import a module dynamically given the full path?,"Let's have 
+MyClass
+ in 
+module.name
+ module defined at 
+/path/to/file.py
+. Below is how we import 
+MyClass
+ from this module
+
+
+For Python 3.5+ use (
+docs
+):
+
+
+import importlib.util
+import sys
+spec = importlib.util.spec_from_file_location(""module.name"", ""/path/to/file.py"")
+foo = importlib.util.module_from_spec(spec)
+sys.modules[""module.name""] = foo
+spec.loader.exec_module(foo)
+foo.MyClass()
+
+
+
+For Python 3.3 and 3.4 use:
+
+
+from importlib.machinery import SourceFileLoader
+
+foo = SourceFileLoader(""module.name"", ""/path/to/file.py"").load_module()
+foo.MyClass()
+
+
+
+(Although this has been deprecated in Python 3.4.)
+
+
+For Python 2 use:
+
+
+import imp
+
+foo = imp.load_source('module.name', '/path/to/file.py')
+foo.MyClass()
+
+
+
+There are equivalent convenience functions for compiled Python files and DLLs.
+
+
+See also 
+http://bugs.python.org/issue21436
+.
+
+"
+Relative imports in Python 3,"
+
+unfortunately, this module needs to be inside the package, and it also
+needs to be runnable as a script, sometimes. Any idea how I could
+achieve that?
+
+
+
+
+It's quite common to have a layout like this...
+
+
+main.py
+mypackage/
+    __init__.py
+    mymodule.py
+    myothermodule.py
+
+
+
+...with a 
+mymodule.py
+ like this...
+
+
+#!/usr/bin/env python3
+
+# Exported function
+def as_int(a):
+    return int(a)
+
+# Test function for module  
+def _test():
+    assert as_int('1') == 1
+
+if __name__ == '__main__':
+    _test()
+
+
+
+...a 
+myothermodule.py
+ like this...
+
+
+#!/usr/bin/env python3
+
+from .mymodule import as_int
+
+# Exported function
+def add(a, b):
+    return as_int(a) + as_int(b)
+
+# Test function for module  
+def _test():
+    assert add('1', '1') == 2
+
+if __name__ == '__main__':
+    _test()
+
+
+
+...and a 
+main.py
+ like this...
+
+
+#!/usr/bin/env python3
+
+from mypackage.myothermodule import add
+
+def main():
+    print(add('1', '1'))
+
+if __name__ == '__main__':
+    main()
+
+
+
+...which works fine when you run 
+main.py
+ or 
+mypackage/mymodule.py
+, but fails with 
+mypackage/myothermodule.py
+, due to the relative import...
+
+
+from .mymodule import as_int
+
+
+
+The way you're supposed to run it is by using the -m option and giving the path in the Python module system (rather than in the filesystem)...
+
+
+python3 -m mypackage.myothermodule
+
+
+
+...but it's somewhat verbose, and doesn't mix well with a shebang line like 
+#!/usr/bin/env python3
+.
+
+
+An alternative is to avoid using relative imports, and just use...
+
+
+from mypackage.mymodule import as_int
+
+
+
+Either way, you'll need to run from the parent of 
+mypackage
+, or add that directory to 
+PYTHONPATH
+ (either one will ensure that 
+mypackage
+ is in the sys.path 
+module search path
+). Or, if you want it to work ""out of the box"", you can frob the 
+PYTHONPATH
+ in code first with this...
+
+
+import sys
+import os
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
+
+from mypackage.mymodule import as_int
+
+
+
+It's kind of a pain, but there's a clue as to why in 
+an email
+ written by a certain Guido van Rossum...
+
+
+
+
+I'm -1 on this and on any other proposed twiddlings of the 
+__main__
+
+machinery. The only use case seems to be running scripts that happen
+to be living inside a module's directory, which I've always seen as an
+antipattern. To make me change my mind you'd have to convince me that
+it isn't.
+
+
+
+
+Whether running scripts inside a package is an antipattern or not is subjective, but personally I find it really useful in a package I have which contains some custom wxPython widgets, so I can run the script for any of the source files to display a 
+wx.Frame
+ containing only that widget for testing purposes.
+
+"
+Use different Python version with virtualenv,"NOTE:
+ For 
+Python 3.3+
+, see The Aelfinn's 
+answer
+ below.
+
+
+
+
+Use the 
+--python
+ (or short 
+-p
+) option when creating a virtualenv instance to specify the Python executable you want to use, e.g.:
+
+
+virtualenv --python=""/usr/bin/python2.6"" ""/path/to/new/virtualenv/""
+
+
+"
+How do I get time of a Python program's execution?,"The simplest way in Python:
+
+
+import time
+start_time = time.time()
+main()
+print(""--- %s seconds ---"" % (time.time() - start_time))
+
+
+
+This assumes that your program takes at least a tenth of second to run.
+
+
+Prints:
+
+
+--- 0.764891862869 seconds ---
+
+
+"
+Random string generation with upper case letters and digits,"Answer in one line:
+
+
+''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(N))
+
+
+
+or even shorter starting with Python 3.6 using 
+random.choices()
+:
+
+
+''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
+
+
+
+A cryptographically more secure version:
+ 
+see this post
+
+
+''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(N))
+
+
+
+In details, with a clean function for further reuse:
+
+
+>>> import string
+>>> import random
+>>> def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+...    return ''.join(random.choice(chars) for _ in range(size))
+...
+>>> id_generator()
+'G5G74W'
+>>> id_generator(3, ""6793YUIO"")
+'Y3U'
+
+
+
+How does it work ?
+
+
+We import 
+string
+, a module that contains sequences of common ASCII characters, and 
+random
+, a module that deals with random generation.
+
+
+string.ascii_uppercase + string.digits
+ just concatenates the list of characters representing uppercase ASCII chars and digits:
+
+
+>>> string.ascii_uppercase
+'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+>>> string.digits
+'0123456789'
+>>> string.ascii_uppercase + string.digits
+'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+
+
+
+Then we use a list comprehension to create a list of 'n' elements:
+
+
+>>> range(4) # range create a list of 'n' numbers
+[0, 1, 2, 3]
+>>> ['elem' for _ in range(4)] # we use range to create 4 times 'elem'
+['elem', 'elem', 'elem', 'elem']
+
+
+
+In the example above, we use 
+[
+ to create the list, but we don't in the 
+id_generator
+ function so Python doesn't create the list in memory, but generates the elements on the fly, one by one (more about this 
+here
+).
+
+
+Instead of asking to create 'n' times the string 
+elem
+, we will ask Python to create 'n' times a random character, picked from a sequence of characters:
+
+
+>>> random.choice(""abcde"")
+'a'
+>>> random.choice(""abcde"")
+'d'
+>>> random.choice(""abcde"")
+'b'
+
+
+
+Therefore 
+random.choice(chars) for _ in range(size)
+ really is creating a sequence of 
+size
+ characters. Characters that are randomly picked from 
+chars
+:
+
+
+>>> [random.choice('abcde') for _ in range(3)]
+['a', 'b', 'b']
+>>> [random.choice('abcde') for _ in range(3)]
+['e', 'b', 'e']
+>>> [random.choice('abcde') for _ in range(3)]
+['d', 'a', 'c']
+
+
+
+Then we just join them with an empty string so the sequence becomes a string:
+
+
+>>> ''.join(['a', 'b', 'b'])
+'abb'
+>>> [random.choice('abcde') for _ in range(3)]
+['d', 'c', 'b']
+>>> ''.join(random.choice('abcde') for _ in range(3))
+'dac'
+
+
+"
+How do I print to stderr in Python?,"I found this to be the only one short, flexible, portable and readable:
+
+
+import sys
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
+
+
+The optional function 
+eprint
+ saves some repetition. It can be used in the same way as the standard 
+print
+ function:
+
+
+>>> print(""Test"")
+Test
+>>> eprint(""Test"")
+Test
+>>> eprint(""foo"", ""bar"", ""baz"", sep=""---"")
+foo---bar---baz
+
+
+"
+Save plot to image file instead of displaying it,"When using 
+matplotlib.pyplot.savefig
+, the file format can be specified by the extension:
+
+
+from matplotlib import pyplot as plt
+
+plt.savefig('foo.png')
+plt.savefig('foo.pdf')
+
+
+
+That gives a rasterized or vectorized output respectively.
+In addition, there is sometimes undesirable whitespace around the image, which can be removed with:
+
+
+plt.savefig('foo.png', bbox_inches='tight')
+
+
+
+Note that if showing the plot, 
+plt.show()
+ should follow 
+plt.savefig()
+; otherwise, the file image will be blank.
+
+"
+Selecting multiple columns in a Pandas dataframe,"The column names (which are strings) cannot be sliced in the manner you tried.
+
+
+Here you have a couple of options. If you know from context which variables you want to slice out, you can just return a view of only those columns by passing a list into the 
+__getitem__
+ syntax
+ (the []'s).
+
+
+df1 = df[['a', 'b']]
+
+
+
+Alternatively, if it matters to index them numerically and not by their name (say your code should automatically do this without knowing the names of the first two columns) then you can do this instead:
+
+
+df1 = df.iloc[:, 0:2] # Remember that Python does not slice inclusive of the ending index.
+
+
+
+Additionally, you should familiarize yourself with the idea of a view into a Pandas object vs. a copy of that object. The first of the above methods will return a new copy in memory of the desired sub-object (the desired slices).
+
+
+Sometimes, however, there are indexing conventions in Pandas that don't do this and instead give you a new variable that just refers to the same chunk of memory as the sub-object or slice in the original object. This will happen with the second way of indexing, so you can modify it with the 
+.copy()
+ method to get a regular copy. When this happens, changing what you think is the sliced object can sometimes alter the original object. Always good to be on the look out for this.
+
+
+df1 = df.iloc[0, 0:2].copy() # To avoid the case where changing df1 also changes df
+
+
+
+To use 
+iloc
+, you need to know the column positions (or indices). As the column positions may change, instead of hard-coding indices, you can use 
+iloc
+ along with 
+get_loc
+ function of 
+columns
+ method of dataframe object to obtain column indices.
+
+
+{df.columns.get_loc(c): c for idx, c in enumerate(df.columns)}
+
+
+
+Now you can use this dictionary to access columns through names and using 
+iloc
+.
+
+"
+Make a dictionary (dict) from separate lists of keys and values,"Like this:
+
+
+keys = ['a', 'b', 'c']
+values = [1, 2, 3]
+dictionary = dict(zip(keys, values))
+print(dictionary) # {'a': 1, 'b': 2, 'c': 3}
+
+
+
+Voila :-)  The pairwise 
+dict
+ constructor and 
+zip
+ function are awesomely useful.
+
+"
+What does __all__ mean in Python?,"It's a list of public objects of that module, as interpreted by 
+import *
+. It overrides the default of hiding everything that begins with an underscore.
+
+"
+What is the best way of implementing a singleton in Python?,"You just need a decorator, different depending on the python version.
+
+
+Notice how 
+foo
+ gets printed only once.
+
+
+
+
+Python 3.2+
+
+
+Implementation
+:
+
+
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+class CustomClass(object):
+
+    def __init__(self, arg):
+        print(f""CustomClass initialised with {arg}"")
+        self.arg = arg
+
+
+
+Usage
+
+
+c1 = CustomClass(""foo"")
+c2 = CustomClass(""foo"")
+c3 = CustomClass(""bar"")
+
+print(c1 == c2)
+print(c1 == c3)
+
+
+
+Output
+
+
+>>> CustomClass initialised with foo
+>>> CustomClass initialised with bar
+>>> True
+>>> False
+
+
+
+
+
+Python 3.9+
+
+
+Implementation
+:
+
+
+from functools import cache
+
+@cache
+class CustomClass(object):
+    ...
+
+
+"
+How do I get the filename without the extension from a path in Python?,"Python 3.4+
+
+
+Use 
+pathlib.Path.stem
+
+
+>>> from pathlib import Path
+>>> Path(""/path/to/file.txt"").stem
+'file'
+>>> Path(""/path/to/file.tar.gz"").stem
+'file.tar'
+
+
+
+Python < 3.4
+
+
+Use 
+os.path.splitext
+ in combination with 
+os.path.basename
+:
+
+
+>>> os.path.splitext(os.path.basename(""/path/to/file.txt""))[0]
+'file'
+>>> os.path.splitext(os.path.basename(""/path/to/file.tar.gz""))[0]
+'file.tar'
+
+
+"
+How do I profile a Python script?,"Python includes a profiler called 
+cProfile
+.
+ It not only gives the total running time, but also times each function separately, and tells you how many times each function was called, making it easy to determine where you should make optimizations.
+
+
+You can call it from within your code, or from the interpreter, like this:
+
+
+import cProfile
+cProfile.run('foo()')
+
+
+
+Even more usefully, you can invoke cProfile when running a script:
+
+
+python -m cProfile myscript.py
+
+
+
+Or when running a module:
+
+
+python -m cProfile -m mymodule
+
+
+
+To make it even easier, I made a little batch file called 'profile.bat':
+
+
+python -m cProfile %1
+
+
+
+So all I have to do is run:
+
+
+profile euler048.py
+
+
+
+And I get this:
+
+
+1007 function calls in 0.061 CPU seconds
+
+Ordered by: standard name
+ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    1    0.000    0.000    0.061    0.061 
+:1(
+)
+ 1000    0.051    0.000    0.051    0.000 euler048.py:2(
+)
+    1    0.005    0.005    0.061    0.061 euler048.py:2(
+)
+    1    0.000    0.000    0.061    0.061 {execfile}
+    1    0.002    0.002    0.053    0.053 {map}
+    1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler objects}
+    1    0.000    0.000    0.000    0.000 {range}
+    1    0.003    0.003    0.003    0.003 {sum}
+
+
+
+For more information, check out this tutorial from PyCon 2013 titled
+
+Python Profiling
+
+
+Also via YouTube
+.
+
+"
+if/else in a list comprehension,"You can totally do that. It's just an ordering issue:
+
+
+[f(x) if x is not None else '' for x in xs]
+
+
+
+In general,
+
+
+[f(x) if condition else g(x) for x in sequence]
+
+
+
+And, for list comprehensions with 
+if
+ conditions only,
+
+
+[f(x) for x in sequence if condition]
+
+
+
+Note that this actually uses a different language construct, a 
+conditional expression
+, which itself is not part of the 
+comprehension syntax
+, while the 
+if
+ after the 
+for…in
+ is part of list comprehensions and used to 
+filter
+ elements from the source iterable.
+
+
+
+
+Conditional expressions can be used in all kinds of situations where you want to choose between two expression values based on some condition. This does the same as the 
+ternary operator 
+?:
+ that exists in other languages
+. For example:
+
+
+value = 123
+print(value, 'is', 'even' if value % 2 == 0 else 'odd')
+
+
+"
+Replacements for switch statement in Python?,"Python 3.10 (2021) introduced the 
+match
+-
+case
+ statement, which provides a first-class implementation of a ""switch"" for Python. For example:
+
+
+def f(x):
+    match x:
+        case 'a':
+            return 1
+        case 'b':
+            return 2
+        case _:
+            return 0   # 0 is the default case if x is not found
+
+
+
+The 
+match
+-
+case
+ statement is considerably more powerful than this simple example.
+
+
+Documentation:
+
+
+
+
+match
+ statements
+ (under the ""More Control Flow Tools"" page)
+
+
+The 
+match
+ statement
+ (under ""Compound statements"" page)
+
+
+PEP 634 – Structural Pattern Matching: Specification
+
+
+PEP 636 – Structural Pattern Matching: Tutorial
+
+
+
+
+
+
+If you need to support Python ≤ 3.9, use a dictionary instead:
+
+
+def f(x):
+    return {
+        'a': 1,
+        'b': 2,
+    }.get(x, 0)  # default case
+
+
+"
+How to check for NaN values,"Use 
+math.isnan
+:
+
+
+>>> import math
+>>> x = float('nan')
+>>> math.isnan(x)
+True
+
+
+"
+Why do Python classes inherit object?,"
+
+Is there any reason for a class declaration to inherit from 
+object
+?
+
+
+
+
+In Python 3, apart from compatibility between Python 2 and 3, 
+no reason
+. In Python 2, 
+many reasons
+. 
+
+
+
+
+Python 2.x story:
+
+
+In Python 2.x (from 2.2 onwards) there's two styles of classes depending on the presence or absence of 
+object
+ as a base-class:
+
+
+
+
+""classic"" style
+ classes: they don't have 
+object
+ as a base class:
+
+
+>>> class ClassicSpam:      # no base class
+...     pass
+>>> ClassicSpam.__bases__
+()
+
+
+
+""new"" style
+ classes: they have, directly 
+or indirectly
+ (e.g inherit from a 
+built-in type
+), 
+object
+ as a base class:
+
+
+>>> class NewSpam(object):           # directly inherit from object
+...    pass
+>>> NewSpam.__bases__
+(
+,)
+>>> class IntSpam(int):              # indirectly inherit from object...
+...    pass
+>>> IntSpam.__bases__
+(
+,) 
+>>> IntSpam.__bases__[0].__bases__   # ... because int inherits from object  
+(
+,)
+
+
+
+
+
+Without a doubt, when writing a class you'll 
+always
+ want to go for new-style classes. The perks of doing so are numerous, to list some of them:
+
+
+
+
+Support for descriptors
+. Specifically, the following constructs are made possible with descriptors: 
+
+
+
+
+classmethod
+: A method that receives the class as an implicit argument instead of the instance.
+
+
+staticmethod
+: A method that does not receive the implicit argument 
+self
+ as a first argument.
+
+
+properties with 
+property
+: Create functions for managing the getting, setting and deleting of an attribute. 
+
+
+__slots__
+: Saves memory consumptions of a class and also results in faster attribute access. Of course, it does 
+impose limitations
+.
+
+
+
+
+The 
+__new__
+ static method: lets you customize how new class instances are created. 
+
+
+Method resolution order (MRO)
+: in what order the base classes of a class will be searched when trying to resolve which method to call. 
+
+
+Related to MRO, 
+super
+ calls
+. Also see, 
+super()
+ considered super.
+
+
+
+
+If you don't inherit from 
+object
+, forget these. A more exhaustive description of the previous bullet points along with other perks of ""new"" style classes can be found 
+here
+.
+
+
+One of the downsides of new-style classes is that the class itself is more memory demanding. Unless you're creating many class objects, though, I doubt this would be an issue and it's a negative sinking in a sea of positives.
+
+
+
+
+Python 3.x story:
+
+
+In Python 3, things are simplified. Only new-style classes exist (referred to plainly as classes) so, the only difference in adding 
+object
+ is requiring you to type in 8 more characters. This:
+
+
+class ClassicSpam:
+    pass
+
+
+
+is completely equivalent (apart from their name :-) to this:
+
+
+class NewSpam(object):
+     pass
+
+
+
+and to this:
+
+
+class Spam():
+    pass
+
+
+
+All have 
+object
+ in their 
+__bases__
+.
+
+
+>>> [object in cls.__bases__ for cls in {Spam, NewSpam, ClassicSpam}]
+[True, True, True]
+
+
+
+
+
+So, what should you do?
+
+
+In Python 2:
+ 
+always inherit from 
+object
+ explicitly
+. Get the perks.
+
+
+In Python 3:
+ inherit from 
+object
+ if you are writing code that tries to be Python agnostic, that is, it needs to work both in Python 2 and in Python 3. Otherwise don't, it really makes no difference since Python inserts it for you behind the scenes.
+
+"
+How to put the legend outside the plot,"
+
+You can make the legend text smaller by specifying 
+set_size
+ of 
+FontProperties
+.
+
+
+Resources:
+
+
+
+Legend guide
+
+
+matplotlib.legend
+
+
+matplotlib.pyplot.legend
+
+
+matplotlib.font_manager
+
+
+
+
+set_size(self, size)
+
+
+Valid font size are 
+xx-small
+, 
+x-small
+, 
+small
+, 
+medium
+, 
+large
+, 
+x-large
+, 
+xx-large
+, 
+larger
+, 
+smaller
+, and 
+None
+.
+
+
+
+
+
+
+Real Python: Python Plotting With Matplotlib (Guide)
+
+
+
+
+
+
+
+
+import matplotlib.pyplot as plt
+from matplotlib.font_manager import FontProperties
+
+fontP = FontProperties()
+fontP.set_size('xx-small')
+
+p1, = plt.plot([1, 2, 3], label='Line 1')
+p2, = plt.plot([3, 2, 1], label='Line 2')
+plt.legend(handles=[p1, p2], title='title', bbox_to_anchor=(1.05, 1), loc='upper left', prop=fontP)
+
+
+
+
+
+
+
+fontsize='xx-small'
+ also works, without importing 
+FontProperties
+.
+
+
+
+
+plt.legend(handles=[p1, p2], title='title', bbox_to_anchor=(1.05, 1), loc='upper left', fontsize='xx-small')
+
+
+"
+How do I reverse a string in Python?,"Using 
+slicing
+:
+
+
+>>> 'hello world'[::-1]
+'dlrow olleh'
+
+
+
+
+
+Slice notation takes the form 
+[start:stop:step]
+. In this case, we omit the 
+start
+ and 
+stop
+ positions since we want the whole string. We also use 
+step = -1
+, which means, ""repeatedly step from right to left by 1 character"".
+
+"
+How do I check if a directory exists in Python?,"Use 
+os.path.isdir
+ for directories only:
+
+
+>>> import os
+>>> os.path.isdir('new_folder')
+True
+
+
+
+Use 
+os.path.exists
+ for both files and directories:
+
+
+>>> import os
+>>> os.path.exists(os.path.join(os.getcwd(), 'new_folder', 'file.txt'))
+False
+
+
+
+Alternatively, you can use 
+pathlib
+:
+
+
+ >>> from pathlib import Path
+ >>> Path('new_folder').is_dir()
+ True
+ >>> (Path.cwd() / 'new_folder' / 'file.txt').exists()
+ False
+
+
+"
+"What is the Python 3 equivalent of ""python -m SimpleHTTPServer""","From 
+the docs
+:
+
+
+
+
+The 
+SimpleHTTPServer
+ module has been merged into 
+http.server
+ in Python 3.0. The 2to3 tool will automatically adapt imports when converting your sources to 3.0.
+
+
+
+
+So, your command is 
+python -m http.server
+, or depending on your installation, it can be:
+
+
+python3 -m http.server
+
+
+"
+What is setup.py?,"setup.py
+ is a Python file, the presence of which is an indication that the module/package you are about to install has likely been packaged and distributed with 
+Distutils
+, which is the standard for distributing Python Modules.
+
+
+This allows you to easily 
+install Python packages
+. Often it's enough to write:
+
+
+$ pip install . 
+
+
+
+pip
+ will use 
+setup.py
+ to install your module. Avoid calling 
+setup.py
+ directly.
+
+"
+How can I flush the output of the print function?,"In Python 3, 
+print
+ can take an optional 
+flush
+ argument:
+
+
+print(""Hello, World!"", flush=True)
+
+
+
+In Python 2, after calling 
+print
+, do:
+
+
+import sys
+sys.stdout.flush()
+
+
+
+By default, 
+print
+ prints to 
+sys.stdout
+ (see the documentation for more about 
+file objects
+).
+
+"
+Create a dictionary with comprehension,"Use a 
+dict comprehension
+ (Python 2.7 and later):
+
+
+{key: value for key, value in zip(keys, values)}
+
+
+
+
+
+Alternatively, use the 
+dict
+ constructor:
+
+
+pairs = [('a', 1), ('b', 2)]
+dict(pairs)                          # → {'a': 1, 'b': 2}
+dict((k, v + 10) for k, v in pairs)  # → {'a': 11, 'b': 12}
+
+
+
+Given separate lists of keys and values, use the 
+dict
+ constructor with 
+zip
+:
+
+
+keys = ['a', 'b']
+values = [1, 2]
+dict(zip(keys, values))              # → {'a': 1, 'b': 2}
+
+
+"
+Convert integer to string in Python,">>> str(42)
+'42'
+
+>>> int('42')
+42
+
+
+
+Links to the documentation:
+
+
+
+
+int()
+
+
+str()
+
+
+
+
+str(x)
+ converts any object 
+x
+ to a string by calling 
+x.
+__str__()
+, or 
+repr(x)
+ if 
+x
+ doesn't have a 
+__str__()
+ method.
+
+"
+Use of *args and **kwargs,"The syntax is the 
+*
+ and 
+**
+.  The names 
+*args
+ and 
+**kwargs
+ are only by convention but there's no hard requirement to use them.
+
+
+You would use 
+*args
+ when you're not sure how many arguments might be passed to your function, i.e. it allows you pass an arbitrary number of arguments to your function.  For example:
+
+
+>>> def print_everything(*args):
+        for count, thing in enumerate(args):
+...         print( '{0}. {1}'.format(count, thing))
+...
+>>> print_everything('apple', 'banana', 'cabbage')
+0. apple
+1. banana
+2. cabbage
+
+
+
+Similarly, 
+**kwargs
+ allows you to handle named arguments that you have not defined in advance:
+
+
+>>> def table_things(**kwargs):
+...     for name, value in kwargs.items():
+...         print( '{0} = {1}'.format(name, value))
+...
+>>> table_things(apple = 'fruit', cabbage = 'vegetable')
+cabbage = vegetable
+apple = fruit
+
+
+
+You can use these along with named arguments too.  The explicit arguments get values first and then everything else is passed to 
+*args
+ and 
+**kwargs
+.  The named arguments come first in the list.  For example:
+
+
+def table_things(titlestring, **kwargs)
+
+
+
+You can also use both in the same function definition but 
+*args
+ must occur before 
+**kwargs
+.
+
+
+You can also use the 
+*
+ and 
+**
+ syntax when calling a function.  For example:
+
+
+>>> def print_three_things(a, b, c):
+...     print( 'a = {0}, b = {1}, c = {2}'.format(a,b,c))
+...
+>>> mylist = ['aardvark', 'baboon', 'cat']
+>>> print_three_things(*mylist)
+a = aardvark, b = baboon, c = cat
+
+
+
+As you can see in this case it takes the list (or tuple) of items and unpacks it. By this it matches them to the arguments in the function.  Of course, you could have a 
+*
+ both in the function definition and in the function call.
+
+"
+Change column type in pandas,"You have four main options for converting types in pandas:
+
+
+
+
+to_numeric()
+ - provides functionality to safely convert non-numeric types (e.g. strings) to a suitable numeric type. (See also 
+to_datetime()
+ and 
+to_timedelta()
+.)
+
+
+
+
+astype()
+ - convert (almost) any type to (almost) any other type (even if it's not necessarily sensible to do so). Also allows you to convert to 
+categorial
+ types (very useful).
+
+
+
+
+infer_objects()
+ - a utility method to convert object columns holding Python objects to a pandas type if possible.
+
+
+
+
+convert_dtypes()
+ - convert DataFrame columns to the ""best possible""  dtype that supports 
+pd.NA
+ (pandas' object to indicate a missing value).
+
+
+
+
+
+
+Read on for more detailed explanations and usage of each of these methods.
+
+
+
+
+1. 
+to_numeric()
+
+
+The best way to convert one or more columns of a DataFrame to numeric values is to use 
+pandas.to_numeric()
+.
+
+
+This function will try to change non-numeric objects (such as strings) into integers or floating-point numbers as appropriate.
+
+
+Basic usage
+
+
+The input to 
+to_numeric()
+ is a Series or a single column of a DataFrame.
+
+
+>>> s = pd.Series([""8"", 6, ""7.5"", 3, ""0.9""]) # mixed string and numeric values
+>>> s
+0      8
+1      6
+2    7.5
+3      3
+4    0.9
+dtype: object
+
+>>> pd.to_numeric(s) # convert everything to float values
+0    8.0
+1    6.0
+2    7.5
+3    3.0
+4    0.9
+dtype: float64
+
+
+
+As you can see, a new Series is returned. Remember to assign this output to a variable or column name to continue using it:
+
+
+# convert Series
+my_series = pd.to_numeric(my_series)
+
+# convert column ""a"" of a DataFrame
+df[""a""] = pd.to_numeric(df[""a""])
+
+
+
+You can also use it to convert multiple columns of a DataFrame via the 
+apply()
+ method:
+
+
+# convert all columns of DataFrame
+df = df.apply(pd.to_numeric) # convert all columns of DataFrame
+
+# convert just columns ""a"" and ""b""
+df[[""a"", ""b""]] = df[[""a"", ""b""]].apply(pd.to_numeric)
+
+
+
+As long as your values can all be converted, that's probably all you need.
+
+
+Error handling
+
+
+But what if some values can't be converted to a numeric type?
+
+
+to_numeric()
+ also takes an 
+errors
+ keyword argument that allows you to force non-numeric values to be 
+NaN
+, or simply ignore columns containing these values.
+
+
+Here's an example using a Series of strings 
+s
+ which has the object dtype:
+
+
+>>> s = pd.Series(['1', '2', '4.7', 'pandas', '10'])
+>>> s
+0         1
+1         2
+2       4.7
+3    pandas
+4        10
+dtype: object
+
+
+
+The default behaviour is to raise if it can't convert a value. In this case, it can't cope with the string 'pandas':
+
+
+>>> pd.to_numeric(s) # or pd.to_numeric(s, errors='raise')
+ValueError: Unable to parse string
+
+
+
+Rather than fail, we might want 'pandas' to be considered a missing/bad numeric value. We can coerce invalid values to 
+NaN
+ as follows using the 
+errors
+ keyword argument:
+
+
+>>> pd.to_numeric(s, errors='coerce')
+0     1.0
+1     2.0
+2     4.7
+3     NaN
+4    10.0
+dtype: float64
+
+
+
+The third option for 
+errors
+ is just to ignore the operation if an invalid value is encountered:
+
+
+>>> pd.to_numeric(s, errors='ignore')
+# the original Series is returned untouched
+
+
+
+This last option is particularly useful for converting your entire DataFrame, but don't know which of our columns can be converted reliably to a numeric type. In that case, just write:
+
+
+df.apply(pd.to_numeric, errors='ignore')
+
+
+
+The function will be applied to each column of the DataFrame. Columns that can be converted to a numeric type will be converted, while columns that cannot (e.g. they contain non-digit strings or dates) will be left alone.
+
+
+Downcasting
+
+
+By default, conversion with 
+to_numeric()
+ will give you either an 
+int64
+ or 
+float64
+ dtype (or whatever integer width is native to your platform).
+
+
+That's usually what you want, but what if you wanted to save some memory and use a more compact dtype, like 
+float32
+, or 
+int8
+?
+
+
+to_numeric()
+ gives you the option to downcast to either 
+'integer'
+, 
+'signed'
+, 
+'unsigned'
+, 
+'float'
+. Here's an example for a simple series 
+s
+ of integer type:
+
+
+>>> s = pd.Series([1, 2, -7])
+>>> s
+0    1
+1    2
+2   -7
+dtype: int64
+
+
+
+Downcasting to 
+'integer'
+ uses the smallest possible integer that can hold the values:
+
+
+>>> pd.to_numeric(s, downcast='integer')
+0    1
+1    2
+2   -7
+dtype: int8
+
+
+
+Downcasting to 
+'float'
+ similarly picks a smaller than normal floating type:
+
+
+>>> pd.to_numeric(s, downcast='float')
+0    1.0
+1    2.0
+2   -7.0
+dtype: float32
+
+
+
+
+
+2. 
+astype()
+
+
+The 
+astype()
+ method enables you to be explicit about the dtype you want your DataFrame or Series to have. It's very versatile in that you can try and go from one type to any other.
+
+
+Basic usage
+
+
+Just pick a type: you can use a NumPy dtype (e.g. 
+np.int16
+), some Python types (e.g. bool), or pandas-specific types (like the categorical dtype).
+
+
+Call the method on the object you want to convert and 
+astype()
+ will try and convert it for you:
+
+
+# convert all DataFrame columns to the int64 dtype
+df = df.astype(int)
+
+# convert column ""a"" to int64 dtype and ""b"" to complex type
+df = df.astype({""a"": int, ""b"": complex})
+
+# convert Series to float16 type
+s = s.astype(np.float16)
+
+# convert Series to Python strings
+s = s.astype(str)
+
+# convert Series to categorical type - see docs for more details
+s = s.astype('category')
+
+
+
+Notice I said ""try"" - if 
+astype()
+ does not know how to convert a value in the Series or DataFrame, it will raise an error. For example, if you have a 
+NaN
+ or 
+inf
+ value you'll get an error trying to convert it to an integer.
+
+
+As of pandas 0.20.0, this error can be suppressed by passing 
+errors='ignore'
+. Your original object will be returned untouched.
+
+
+Be careful
+
+
+astype()
+ is powerful, but it will sometimes convert values ""incorrectly"". For example:
+
+
+>>> s = pd.Series([1, 2, -7])
+>>> s
+0    1
+1    2
+2   -7
+dtype: int64
+
+
+
+These are small integers, so how about converting to an unsigned 8-bit type to save memory?
+
+
+>>> s.astype(np.uint8)
+0      1
+1      2
+2    249
+dtype: uint8
+
+
+
+The conversion worked, but the -7 was wrapped round to become 249 (i.e. 2
+8
+ - 7)!
+
+
+Trying to downcast using 
+pd.to_numeric(s, downcast='unsigned')
+ instead could help prevent this error.
+
+
+
+
+3. 
+infer_objects()
+
+
+Version 0.21.0 of pandas introduced the method 
+infer_objects()
+ for converting columns of a DataFrame that have an object datatype to a more specific type (soft conversions).
+
+
+For example, here's a DataFrame with two columns of object type. One holds actual integers and the other holds strings representing integers:
+
+
+>>> df = pd.DataFrame({'a': [7, 1, 5], 'b': ['3','2','1']}, dtype='object')
+>>> df.dtypes
+a    object
+b    object
+dtype: object
+
+
+
+Using 
+infer_objects()
+, you can change the type of column 'a' to int64:
+
+
+>>> df = df.infer_objects()
+>>> df.dtypes
+a     int64
+b    object
+dtype: object
+
+
+
+Column 'b' has been left alone since its values were strings, not integers. If you wanted to force both columns to an integer type, you could use 
+df.astype(int)
+ instead.
+
+
+
+
+4. 
+convert_dtypes()
+
+
+Version 1.0 and above includes a method 
+convert_dtypes()
+ to convert Series and DataFrame columns to the best possible dtype that supports the 
+pd.NA
+ missing value.
+
+
+Here ""best possible"" means the type most suited to hold the values. For example, this a pandas integer type, if all of the values are integers (or missing values): an object column of Python integer objects are converted to 
+Int64
+, a column of NumPy 
+int32
+ values, will become the pandas dtype 
+Int32
+.
+
+
+With our 
+object
+ DataFrame 
+df
+, we get the following result:
+
+
+>>> df.convert_dtypes().dtypes                                             
+a     Int64
+b    string
+dtype: object
+
+
+
+Since column 'a' held integer values, it was converted to the 
+Int64
+ type (which is capable of holding missing values, unlike 
+int64
+).
+
+
+Column 'b' contained string objects, so was changed to pandas' 
+string
+ dtype.
+
+
+By default, this method will infer the type from object values in each column. We can change this by passing 
+infer_objects=False
+:
+
+
+>>> df.convert_dtypes(infer_objects=False).dtypes                          
+a    object
+b    string
+dtype: object
+
+
+
+Now column 'a' remained an object column: pandas knows it can be described as an 'integer' column (internally it ran 
+infer_dtype
+) but didn't infer exactly what dtype of integer it should have so did not convert it. Column 'b' was again converted to 'string' dtype as it was recognised as holding 'string' values.
+
+"
+Catch and print full Python exception traceback without halting/exiting the program,"Some other answer have already pointed out the 
+traceback
+ module.
+
+
+Please notice that with 
+print_exc
+, in some corner cases, you will not obtain what you would expect. In Python 2.x:
+
+
+import traceback
+
+try:
+    raise TypeError(""Oups!"")
+except Exception, err:
+    try:
+        raise TypeError(""Again !?!"")
+    except:
+        pass
+
+    traceback.print_exc()
+
+
+
+...will display the traceback of the 
+last
+ exception:
+
+
+Traceback (most recent call last):
+  File ""e.py"", line 7, in 
+
+    raise TypeError(""Again !?!"")
+TypeError: Again !?!
+
+
+
+If you really need to access the original 
+traceback
+ one solution is to cache the 
+exception infos
+ as returned from 
+exc_info
+ in a local variable and display it using 
+print_exception
+:
+
+
+import traceback
+import sys
+
+try:
+    raise TypeError(""Oups!"")
+except Exception, err:
+    try:
+        exc_info = sys.exc_info()
+
+        # do you usefull stuff here
+        # (potentially raising an exception)
+        try:
+            raise TypeError(""Again !?!"")
+        except:
+            pass
+        # end of useful stuff
+
+
+    finally:
+        # Display the *original* exception
+        traceback.print_exception(*exc_info)
+        del exc_info
+
+
+
+Producing:
+
+
+Traceback (most recent call last):
+  File ""t.py"", line 6, in 
+
+    raise TypeError(""Oups!"")
+TypeError: Oups!
+
+
+
+Few pitfalls with this though:
+
+
+
+
+From the doc of 
+sys_info
+:
+
+
+
+
+Assigning the traceback return value to a local variable in a function that is handling an exception will cause a 
+circular reference
+. This will prevent anything referenced by a local variable in the same function or by the traceback from being garbage collected. [...] 
+If you do need the traceback, make sure to delete it after use
+ (best done with a try ... finally statement)
+
+
+
+
+but, from the same doc:
+
+
+
+
+Beginning with Python 2.2, such cycles are automatically reclaimed
+ when garbage collection is enabled and they become unreachable, but it remains more efficient to avoid creating cycles.
+
+
+
+
+
+
+
+
+On the other hand, by allowing you to access the traceback 
+associated with
+ an exception, Python 3 produce a less surprising result:
+
+
+import traceback
+
+try:
+    raise TypeError(""Oups!"")
+except Exception as err:
+    try:
+        raise TypeError(""Again !?!"")
+    except:
+        pass
+
+    traceback.print_tb(err.__traceback__)
+
+
+
+... will display:
+
+
+  File ""e3.py"", line 4, in 
+
+    raise TypeError(""Oups!"")
+
+
+"
+What are the differences between type() and isinstance()?,"To summarize the contents of other (already good!) answers, 
+isinstance
+ caters for inheritance (an instance of a derived class 
+is an
+ instance of a base class, too), while checking for equality of 
+type
+ does not (it demands identity of types and rejects instances of subtypes, AKA subclasses).
+
+
+Normally, in Python, you want your code to support inheritance, of course (since inheritance is so handy, it would be bad to stop code using yours from using it!), so 
+isinstance
+ is less bad than checking identity of 
+type
+s because it seamlessly supports inheritance.
+
+
+It's not that 
+isinstance
+ is 
+good
+, mind you—it's just 
+less bad
+ than checking equality of types.  The normal, Pythonic, preferred solution is almost invariably ""duck typing"": try using the argument 
+as if
+ it was of a certain desired type, do it in a 
+try
+/
+except
+ statement catching all exceptions that could arise if the argument was not in fact of that type (or any other type nicely duck-mimicking it;-), and in the 
+except
+ clause, try something else (using the argument ""as if"" it was of some other type).
+
+
+basestring
+ 
+is
+, however, quite a special case—a builtin type that exists 
+only
+ to let you use 
+isinstance
+ (both 
+str
+ and 
+unicode
+ subclass 
+basestring
+). Strings are sequences (you could loop over them, index them, slice them, ...), but you generally want to treat them as ""scalar"" types—it's somewhat incovenient (but a reasonably frequent use case) to treat all kinds of strings (and maybe other scalar types, i.e., ones you can't loop on) one way, all containers (lists, sets, dicts, ...) in another way, and 
+basestring
+ plus 
+isinstance
+ helps you do that—the overall structure of this idiom is something like:
+
+
+if isinstance(x, basestring)
+  return treatasscalar(x)
+try:
+  return treatasiter(iter(x))
+except TypeError:
+  return treatasscalar(x)
+
+
+
+You could say that 
+basestring
+ is an 
+Abstract Base Class
+ (""ABC"")—it offers no concrete functionality to subclasses, but rather exists as a ""marker"", mainly for use with 
+isinstance
+. The concept is obviously a growing one in Python, since 
+PEP 3119
+, which introduces a generalization of it, was accepted and has been implemented starting with Python 2.6 and 3.0.
+
+
+The PEP makes it clear that, while ABCs can often substitute for duck typing, there is generally no big pressure to do that (see 
+here
+). ABCs as implemented in recent Python versions do however offer extra goodies: 
+isinstance
+ (and 
+issubclass
+) can now mean more than just ""[an instance of] a derived class"" (in particular, any class can be ""registered"" with an ABC so that it will show as a subclass, and its instances as instances of the ABC); and ABCs can also offer extra convenience to actual subclasses in a very natural way via Template Method design pattern applications (see 
+here
+ and 
+here
+ [[part II]] for more on the TM DP, in general and specifically in Python, independent of ABCs).
+
+
+For the underlying mechanics of ABC support as offered in Python 2.6, see 
+here
+; for their 3.1 version, very similar, see 
+here
+.  In both versions, standard library module 
+collections
+ (that's the 3.1 version—for the very similar 2.6 version, see 
+here
+) offers several useful ABCs.
+
+
+For the purpose of this answer, the key thing to retain about ABCs (beyond an arguably more natural placement for TM DP functionality, compared to the classic Python alternative of mixin classes such as 
+UserDict.DictMixin
+) is that they make 
+isinstance
+ (and 
+issubclass
+) much more attractive and pervasive (in Python 2.6 and going forward) than they used to be (in 2.5 and before), and therefore, by contrast, make checking type equality an even worse practice in recent Python versions than it already used to be.
+
+"
+How do I sort a dictionary by key?,"
+
+Note:
+ for Python 3.7+, see 
+this answer
+
+
+
+
+Standard Python dictionaries are unordered (until Python 3.7). Even if you sorted the (key,value) pairs, you wouldn't be able to store them in a 
+dict
+ in a way that would preserve the ordering.
+
+
+The easiest way is to use 
+OrderedDict
+, which remembers the order in which the elements have been inserted:
+
+
+In [1]: import collections
+
+In [2]: d = {2:3, 1:89, 4:5, 3:0}
+
+In [3]: od = collections.OrderedDict(sorted(d.items()))
+
+In [4]: od
+Out[4]: OrderedDict([(1, 89), (2, 3), (3, 0), (4, 5)])
+
+
+
+Never mind the way 
+od
+ is printed out; it'll work as expected:
+
+
+In [11]: od[1]
+Out[11]: 89
+
+In [12]: od[3]
+Out[12]: 0
+
+In [13]: for k, v in od.iteritems(): print k, v
+   ....: 
+1 89
+2 3
+3 0
+4 5
+
+
+
+Python 3
+
+
+For Python 3 users, one needs to use the 
+.items()
+ instead of 
+.iteritems()
+:
+
+
+In [13]: for k, v in od.items(): print(k, v)
+   ....: 
+1 89
+2 3
+3 0
+4 5
+
+
+"
+Is there a built-in function to print all the current properties and values of an object?,"You are really mixing together two different things.
+
+
+Use 
+dir()
+, 
+vars()
+ or the 
+inspect
+ module to get what you are interested in (I use 
+__builtins__
+ as an example; you can use any object instead).
+
+
+>>> l = dir(__builtins__)
+>>> d = __builtins__.__dict__
+
+
+
+Print that dictionary however fancy you like:
+
+
+>>> print l
+['ArithmeticError', 'AssertionError', 'AttributeError',...
+
+
+
+or
+
+
+>>> from pprint import pprint
+>>> pprint(l)
+['ArithmeticError',
+ 'AssertionError',
+ 'AttributeError',
+ 'BaseException',
+ 'DeprecationWarning',
+...
+
+>>> pprint(d, indent=2)
+{ 'ArithmeticError': 
+,
+  'AssertionError': 
+,
+  'AttributeError': 
+,
+...
+  '_': [ 'ArithmeticError',
+         'AssertionError',
+         'AttributeError',
+         'BaseException',
+         'DeprecationWarning',
+...
+
+
+
+Pretty printing is also available in the interactive debugger as a command:
+
+
+(Pdb) pp vars()
+{'__builtins__': {'ArithmeticError': 
+,
+                  'AssertionError': 
+,
+                  'AttributeError': 
+,
+                  'BaseException': 
+,
+                  'BufferError': 
+,
+                  ...
+                  'zip': 
+},
+ '__file__': 'pass.py',
+ '__name__': '__main__'}
+
+
+"
+How to convert string to bytes in Python 3,"If you look at the docs for 
+bytes
+, it points you to 
+bytearray
+:
+
+
+
+
+bytearray([source[, encoding[, errors]]])
+
+
+Return a new array of bytes. The bytearray type is a mutable sequence of integers in the range 0 <= x < 256. It has most of the usual methods of mutable sequences, described in Mutable Sequence Types, as well as most methods that the bytes type has, see Bytes and Byte Array Methods.
+
+
+The optional source parameter can be used to initialize the array in a few different ways:
+
+
+If it is a string, you must also give the encoding (and optionally, errors) parameters; bytearray() then converts the string to bytes using str.encode().
+
+
+If it is an integer, the array will have that size and will be initialized with null bytes.
+
+
+If it is an object conforming to the buffer interface, a read-only buffer of the object will be used to initialize the bytes array.
+
+
+If it is an iterable, it must be an iterable of integers in the range 0 <= x < 256, which are used as the initial contents of the array.
+
+
+Without an argument, an array of size 0 is created.
+
+
+
+
+So 
+bytes
+ can do much more than just encode a string. It's Pythonic that it would allow you to call the constructor with any type of source parameter that makes sense.
+
+
+For  encoding a string, I think that 
+some_string.encode(encoding)
+ is more Pythonic than using the constructor, because it is the most self documenting -- ""take this string and encode it with this encoding"" is clearer than 
+bytes(some_string, encoding)
+ -- there is no explicit verb when you use the constructor.
+
+
+I checked the Python source. If you pass a unicode string to 
+bytes
+ using CPython, it calls 
+PyUnicode_AsEncodedString
+, which is the implementation of 
+encode
+; so you're just skipping a level of indirection if you call 
+encode
+ yourself.
+
+
+Also, see Serdalis' comment -- 
+unicode_string.encode(encoding)
+ is also more Pythonic because its inverse is 
+byte_string.decode(encoding)
+ and symmetry is nice.
+
+"
+UnicodeEncodeError: 'ascii' codec can't encode character u'\xa0' in position 20: ordinal not in range(128),"Read the Python 
+Unicode HOWTO
+. This error is the 
+very first example
+.
+
+
+Do not use 
+str()
+ to convert from unicode to encoded text / bytes.
+
+
+Instead, use 
+.encode()
+ to encode the string:
+
+
+p.agent_info = u' '.join((agent_contact, agent_telno)).encode('utf-8').strip()
+
+
+
+or work entirely in unicode.
+
+"
+How do I move a file in Python?,"os.rename()
+, 
+os.replace()
+, or 
+shutil.move()
+
+
+All employ the same syntax:
+
+
+import os
+import shutil
+
+os.rename(""path/to/current/file.foo"", ""path/to/new/destination/for/file.foo"")
+os.replace(""path/to/current/file.foo"", ""path/to/new/destination/for/file.foo"")
+shutil.move(""path/to/current/file.foo"", ""path/to/new/destination/for/file.foo"")
+
+
+
+
+
+The filename (
+""file.foo""
+) must be included in both the source and destination arguments. If it differs between the two, the file will be renamed as well as moved.
+
+
+The directory within which the new file is being created must already exist.
+
+
+On Windows, a file with that name must not exist or an exception will be raised, but 
+os.replace()
+ will silently replace a file even in that occurrence.
+
+
+shutil.move
+ simply calls 
+os.rename
+ in most cases. However, if the destination is on a different disk than the source, it will instead copy and then delete the source file.
+
+
+
+"
+How do I get the full path of the current file's directory?,"The special variable 
+__file__
+ contains the path to the current file. From that we can get the directory using either 
+pathlib
+ or the 
+os.path
+ module.
+
+
+Python 3
+
+
+For the directory of the script being run:
+
+
+import pathlib
+pathlib.Path(__file__).parent.resolve()
+
+
+
+For the current working directory:
+
+
+import pathlib
+pathlib.Path().resolve()
+
+
+
+Python 2 and 3
+
+
+For the directory of the script being run:
+
+
+import os
+os.path.dirname(os.path.abspath(__file__))
+
+
+
+If you mean the current working directory:
+
+
+import os
+os.path.abspath(os.getcwd())
+
+
+
+Note that before and after 
+file
+ is two underscores, not just one.
+
+
+Also note that if you are running interactively or have loaded code from something other than a file (eg: a database or online resource), 
+__file__
+ may not be set since there is no notion of ""current file"". The above answer assumes the most common scenario of running a python script that is in a file.
+
+
+References
+
+
+
+
+pathlib
+ in the python documentation.
+
+
+os.path - Python 2.7
+, 
+os.path - Python 3
+
+
+os.getcwd - Python 2.7
+, 
+os.getcwd - Python 3
+
+
+what does the __file__ variable mean/do?
+
+
+
+"
+Null object in Python,"In Python, the 'null' object is the singleton 
+None
+.
+
+
+To check if something is 
+None
+, use the 
+is
+ identity operator:
+
+
+if foo is None:
+    ...
+
+
+"
+Why can't Python parse this JSON data?,"Your data is not valid 
+JSON
+ format. You have 
+[]
+ when you should have 
+{}
+ for the 
+""masks""
+ and 
+""parameters""
+ elements:
+
+
+
+
+[]
+ are for JSON arrays, which are called 
+list
+ in Python
+
+
+{}
+ are for JSON objects, which are called 
+dict
+ in Python
+
+
+
+
+Here's how your JSON file should look:
+
+
+{
+    ""maps"": [
+        {
+            ""id"": ""blabla"",
+            ""iscategorical"": ""0""
+        },
+        {
+            ""id"": ""blabla"",
+            ""iscategorical"": ""0""
+        }
+    ],
+    ""masks"": {
+        ""id"": ""valore""
+    },
+    ""om_points"": ""value"",
+    ""parameters"": {
+        ""id"": ""valore""
+    }
+}
+
+
+
+Then you can use your code:
+
+
+import json
+from pprint import pprint
+
+with open('data.json') as f:
+    data = json.load(f)
+
+pprint(data)
+
+
+
+With data, you can now also find values like so:
+
+
+data[""maps""][0][""id""]
+data[""masks""][""id""]
+data[""om_points""]
+
+
+
+Try those out and see if it starts to make sense.
+
+"
+"What is the use of ""assert"" in Python?","The 
+assert
+ statement exists in almost every programming language. It has two main uses:
+
+
+
+
+It helps detect problems early in your program, where the cause is clear, rather than later when some other operation fails. A type error in Python, for example, can go through several layers of code before actually raising an 
+Exception
+ if not caught early on.
+
+
+
+
+It works as documentation for other developers reading the code, who see the 
+assert
+ and can confidently say that its condition holds from now on.
+
+
+
+
+
+
+When you do...
+
+
+assert condition
+
+
+
+... you're telling the program to test that condition, and immediately trigger an error if the condition is false.
+
+
+In Python, it's roughly equivalent to this:
+
+
+if not condition:
+    raise AssertionError()
+
+
+
+Try it in the Python shell:
+
+
+>>> assert True # nothing happens
+>>> assert False
+Traceback (most recent call last):
+  File ""
+"", line 1, in 
+
+AssertionError
+
+
+
+Assertions can include an optional message, and you can disable them when running the interpreter.
+
+
+To print a message if the assertion fails:
+
+
+assert False, ""Oh no! This assertion failed!""
+
+
+
+Do 
+not
+ use parenthesis to call 
+assert
+ like a function. It is a statement. If you do 
+assert(condition, message)
+ you'll be running the 
+assert
+ with a 
+(condition, message)
+ tuple as first parameter.
+
+
+As for disabling them, when running 
+python
+ in optimized mode, where 
+__debug__
+ is 
+False
+, assert statements will be ignored. Just pass the 
+-O
+ flag:
+
+
+python -O script.py
+
+
+
+See 
+here
+ for the relevant documentation.
+
+"
+Removing duplicates in lists,"The common approach to get a unique collection of items is to use a 
+set
+. Sets are 
+unordered
+ collections of 
+distinct
+ objects. To create a set from any iterable, you can simply pass it to the built-in 
+set()
+ function. If you later need a real list again, you can similarly pass the set to the 
+list()
+ function.
+
+
+The following example should cover whatever you are trying to do:
+
+
+>>> t = [1, 2, 3, 1, 2, 3, 5, 6, 7, 8]
+>>> list(set(t))
+[1, 2, 3, 5, 6, 7, 8]
+>>> s = [1, 2, 3]
+>>> list(set(t) - set(s))
+[8, 5, 6, 7]
+
+
+
+As you can see from the example result, 
+the original order is not maintained
+. As mentioned above, sets themselves are unordered collections, so the order is lost. When converting a set back to a list, an arbitrary order is created.
+
+
+Maintaining order
+
+
+If order is important to you, then you will have to use a different mechanism. A very common solution for this is to rely on 
+OrderedDict
+ to keep the order of keys during insertion:
+
+
+>>> from collections import OrderedDict
+>>> list(OrderedDict.fromkeys(t))
+[1, 2, 3, 5, 6, 7, 8]
+
+
+
+Starting with Python 3.7
+, the built-in dictionary is guaranteed to maintain the insertion order as well, so you can also use that directly if you are on Python 3.7 or later (or CPython 3.6):
+
+
+>>> list(dict.fromkeys(t))
+[1, 2, 3, 5, 6, 7, 8]
+
+
+
+Note that this may have some overhead of creating a dictionary first, and then creating a list from it. If you don’t actually need to preserve the order, you’re often better off using a set, especially because it gives you a lot more operations to work with. Check out 
+this question
+ for more details and alternative ways to preserve the order when removing duplicates.
+
+
+
+
+Finally note that both the 
+set
+ as well as the 
+OrderedDict
+/
+dict
+ solutions require your items to be 
+hashable
+. This usually means that they have to be immutable. If you have to deal with items that are not hashable (e.g. list objects), then you will have to use a slow approach in which you will basically have to compare every item with every other item in a nested loop.
+
+"
+How do I print an exception in Python?,"For Python 2.6 and later and Python 3.x:
+
+
+except Exception as e: print(e)
+
+
+
+For Python 2.5 and earlier, use:
+
+
+except Exception,e: print str(e)
+
+
+"
+How do I check which version of Python is running my script?,"This information is available in the 
+sys.version
+ string in the 
+sys
+ module:
+
+
+>>> import sys
+
+
+
+Human readable:
+
+
+>>> print(sys.version)  # parentheses necessary in python 3.       
+2.5.2 (r252:60911, Jul 31 2008, 17:28:52) 
+[GCC 4.2.3 (Ubuntu 4.2.3-2ubuntu7)]
+
+
+
+For further processing, use 
+sys.version_info
+ or 
+sys.hexversion
+:
+
+
+>>> sys.version_info
+(2, 5, 2, 'final', 0)
+# or
+>>> sys.hexversion
+34014192
+
+
+
+To ensure a script runs with a minimal version requirement of the Python interpreter add this to your code:
+
+
+assert sys.version_info >= (2, 5)
+
+
+
+This compares major and minor version information. Add micro (=
+0
+, 
+1
+, etc) and even releaselevel (=
+'alpha'
+,
+'final'
+, etc) to the tuple as you like. Note however, that it is almost always better to ""duck"" check if a certain feature is there, and if not, workaround (or bail out). Sometimes features go away in newer releases, being replaced by others.
+
+"
+How to make a class JSON serializable,"Do you have an idea about the expected output? For example, will this do?
+
+
+>>> f  = FileItem(""/foo/bar"")
+>>> magic(f)
+'{""fname"": ""/foo/bar""}'
+
+
+
+In that case you can merely call 
+json.dumps(f.__dict__)
+. 
+
+
+If you want more customized output then you will have to subclass 
+JSONEncoder
+ and implement your own custom serialization. 
+
+
+For a trivial example, see below.
+
+
+>>> from json import JSONEncoder
+>>> class MyEncoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__    
+
+>>> MyEncoder().encode(f)
+'{""fname"": ""/foo/bar""}'
+
+
+
+Then you pass this class into the 
+json.dumps()
+ method as 
+cls
+ kwarg:
+
+
+json.dumps(cls=MyEncoder)
+
+
+
+If you also want to decode then you'll have to supply a custom 
+object_hook
+ to the 
+JSONDecoder
+ class. For example:
+
+
+>>> def from_json(json_object):
+        if 'fname' in json_object:
+            return FileItem(json_object['fname'])
+>>> f = JSONDecoder(object_hook = from_json).decode('{""fname"": ""/foo/bar""}')
+>>> f
+<__main__.FileItem object at 0x9337fac>
+>>> 
+
+
+"
+How to deal with SettingWithCopyWarning in Pandas,"The 
+SettingWithCopyWarning
+ was created to flag potentially confusing ""chained"" assignments, such as the following, which does not always work as expected, particularly when the first selection returns a 
+copy
+.  [see 
+GH5390
+ and 
+GH5597
+ for background discussion.]
+
+
+df[df['A'] > 2]['B'] = new_val  # new_val not set in df
+
+
+
+The warning offers a suggestion to rewrite as follows:
+
+
+df.loc[df['A'] > 2, 'B'] = new_val
+
+
+
+However, this doesn't fit your usage, which is equivalent to:
+
+
+df = df[df['A'] > 2]
+df['B'] = new_val
+
+
+
+While it's clear that you don't care about writes making it back to the original frame (since you are overwriting the reference to it), unfortunately this pattern cannot be differentiated from the first chained assignment example. Hence the (false positive) warning. The potential for false positives is addressed in the 
+docs on indexing
+, if you'd like to read further.  You can safely disable this new warning with the following assignment.
+
+
+import pandas as pd
+pd.options.mode.chained_assignment = None  # default='warn'
+
+
+
+
+
+Other Resources
+
+
+
+
+pandas User Guide: Indexing and selecting data
+
+
+Python Data Science Handbook: Data Indexing and Selection
+
+
+Real Python: SettingWithCopyWarning in Pandas: Views vs Copies
+
+
+Dataquest: SettingwithCopyWarning: How to Fix This Warning in Pandas
+
+
+Towards Data Science: Explaining the SettingWithCopyWarning in pandas
+
+
+
+"
+How to drop rows of Pandas DataFrame whose value in a certain column is NaN,"Don't drop, just take the rows where EPS is not NA:
+
+
+df = df[df['EPS'].notna()]
+
+
+"
+Running shell command and capturing the output,"In all officially maintained versions of Python, the simplest approach is to use the 
+subprocess.check_output
+ function:
+
+
+>>> subprocess.check_output(['ls', '-l'])
+b'total 0\n-rw-r--r--  1 memyself  staff  0 Mar 14 11:04 files\n'
+
+
+
+check_output
+ runs a single program that takes only arguments as input.
+1
+ It returns the result exactly as printed to 
+stdout
+. If you need to write input to 
+stdin
+, skip ahead to the 
+run
+ or 
+Popen
+ sections. If you want to execute complex shell commands, see the note on 
+shell=True
+ at the end of this answer.
+
+
+The 
+check_output
+ function works in all officially maintained versions of Python. But for more recent versions, a more flexible approach is available.
+
+
+Modern versions of Python (3.5 or higher): 
+run
+
+
+If you're using 
+Python 3.5+
+, and 
+do not need backwards compatibility
+, the new 
+run
+ function is recommended by the official documentation for most tasks. It provides a very general, high-level API for the 
+subprocess
+ module. To capture the output of a program, pass the 
+subprocess.PIPE
+ flag to the 
+stdout
+ keyword argument. Then access the 
+stdout
+ attribute of the returned 
+CompletedProcess
+ object:
+
+
+>>> import subprocess
+>>> result = subprocess.run(['ls', '-l'], stdout=subprocess.PIPE)
+>>> result.stdout
+b'total 0\n-rw-r--r--  1 memyself  staff  0 Mar 14 11:04 files\n'
+
+
+
+The return value is a 
+bytes
+ object, so if you want a proper string, you'll need to 
+decode
+ it. Assuming the called process returns a UTF-8-encoded string:
+
+
+>>> result.stdout.decode('utf-8')
+'total 0\n-rw-r--r--  1 memyself  staff  0 Mar 14 11:04 files\n'
+
+
+
+This can all be compressed to a one-liner if desired:
+
+
+>>> subprocess.run(['ls', '-l'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+'total 0\n-rw-r--r--  1 memyself  staff  0 Mar 14 11:04 files\n'
+
+
+
+If you want to pass input to the process's 
+stdin
+, you can pass a 
+bytes
+ object to the 
+input
+ keyword argument:
+
+
+>>> cmd = ['awk', 'length($0) > 5']
+>>> ip = 'foo\nfoofoo\n'.encode('utf-8')
+>>> result = subprocess.run(cmd, stdout=subprocess.PIPE, input=ip)
+>>> result.stdout.decode('utf-8')
+'foofoo\n'
+
+
+
+You can capture errors by passing 
+stderr=subprocess.PIPE
+ (capture to 
+result.stderr
+) or 
+stderr=subprocess.STDOUT
+ (capture to 
+result.stdout
+ along with regular output). If you want 
+run
+ to throw an exception when the process returns a nonzero exit code, you can pass 
+check=True
+. (Or you can check the 
+returncode
+ attribute of 
+result
+ above.) When security is not a concern, you can also run more complex shell commands by passing 
+shell=True
+ as described at the end of this answer.
+
+
+Later versions of Python streamline the above further. In Python 3.7+, the above one-liner can be spelled like this:
+
+
+>>> subprocess.run(['ls', '-l'], capture_output=True, text=True).stdout
+'total 0\n-rw-r--r--  1 memyself  staff  0 Mar 14 11:04 files\n'
+
+
+
+Using 
+run
+ this way adds just a bit of complexity, compared to the old way of doing things. But now you can do almost anything you need to do with the 
+run
+ function alone.
+
+
+Older versions of Python (3-3.4): more about 
+check_output
+
+
+If you are using an older version of Python, or need modest backwards compatibility, you can use the 
+check_output
+ function as briefly described above. It has been available since Python 2.7.
+
+
+subprocess.check_output(*popenargs, **kwargs)  
+
+
+
+It takes takes the same arguments as 
+Popen
+ (see below), and returns a string containing the program's output. The beginning of this answer has a more detailed usage example. In Python 3.5+, 
+check_output
+ is equivalent to executing 
+run
+ with 
+check=True
+ and 
+stdout=PIPE
+, and returning just the 
+stdout
+ attribute.
+
+
+You can pass 
+stderr=subprocess.STDOUT
+ to ensure that error messages are included in the returned output. When security is not a concern, you can also run more complex shell commands by passing 
+shell=True
+ as described at the end of this answer.
+
+
+If you need to pipe from 
+stderr
+ or pass input to the process, 
+check_output
+ won't be up to the task. See the 
+Popen
+ examples below in that case.
+
+
+Complex applications and legacy versions of Python (2.6 and below): 
+Popen
+
+
+If you need deep backwards compatibility, or if you need more sophisticated functionality than 
+check_output
+ or 
+run
+ provide, you'll have to work directly with 
+Popen
+ objects, which encapsulate the low-level API for subprocesses.
+
+
+The 
+Popen
+ constructor accepts either 
+a single command
+ without arguments, or 
+a list
+ containing a command as its first item, followed by any number of arguments, each as a separate item in the list. 
+shlex.split
+ can help parse strings into appropriately formatted lists. 
+Popen
+ objects also accept a 
+host of different arguments
+ for process IO management and low-level configuration.
+
+
+To send input and capture output, 
+communicate
+ is almost always the preferred method. As in:
+
+
+output = subprocess.Popen([""mycmd"", ""myarg""], 
+                          stdout=subprocess.PIPE).communicate()[0]
+
+
+
+Or
+
+
+>>> import subprocess
+>>> p = subprocess.Popen(['ls', '-a'], stdout=subprocess.PIPE, 
+...                                    stderr=subprocess.PIPE)
+>>> out, err = p.communicate()
+>>> print out
+.
+..
+foo
+
+
+
+If you set 
+stdin=PIPE
+, 
+communicate
+ also allows you to pass data to the process via 
+stdin
+:
+
+
+>>> cmd = ['awk', 'length($0) > 5']
+>>> p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+...                           stderr=subprocess.PIPE,
+...                           stdin=subprocess.PIPE)
+>>> out, err = p.communicate('foo\nfoofoo\n')
+>>> print out
+foofoo
+
+
+
+Note 
+Aaron Hall's answer
+, which indicates that on some systems, you may need to set 
+stdout
+, 
+stderr
+, and 
+stdin
+ all to 
+PIPE
+ (or 
+DEVNULL
+) to get 
+communicate
+ to work at all.
+
+
+In some rare cases, you may need complex, real-time output capturing. 
+Vartec
+'s answer suggests a way forward, but methods other than 
+communicate
+ are prone to deadlocks if not used carefully.
+
+
+As with all the above functions, when security is not a concern, you can run more complex shell commands by passing 
+shell=True
+.
+
+
+Notes
+
+
+1. Running shell commands: the 
+shell=True
+ argument
+
+
+Normally, each call to 
+run
+, 
+check_output
+, or the 
+Popen
+ constructor executes a 
+single program
+. That means no fancy bash-style pipes. If you want to run complex shell commands, you can pass 
+shell=True
+, which all three functions support. For example:
+
+
+>>> subprocess.check_output('cat books/* | wc', shell=True, text=True)
+' 1299377 17005208 101299376\n'
+
+
+
+However, doing this raises 
+security concerns
+. If you're doing anything more than light scripting, you might be better off calling each process separately, and passing the output from each as an input to the next, via
+
+
+run(cmd, [stdout=etc...], input=other_output)
+
+
+
+Or
+
+
+Popen(cmd, [stdout=etc...]).communicate(other_output)
+
+
+
+The temptation to directly connect pipes is strong; resist it. Otherwise, you'll likely see deadlocks or have to do hacky things like 
+this
+.
+
+"
+Automatically create file 'requirements.txt',"Use 
+Pipenv or other tools
+ is recommended for improving your development flow.
+
+
+pip3 freeze > requirements.txt  # Python3
+pip freeze > requirements.txt  # Python2
+
+
+
+If you do not use a virtual environment, 
+pigar
+ will be a good choice for you.
+
+"
+"How can I overcome ""datetime.datetime not JSON serializable""?","Updated for 2018
+
+
+The original answer accommodated the way MongoDB ""date"" fields were represented as:
+
+
+{""$date"": 1506816000000}
+
+
+If you want a generic Python solution for serializing 
+datetime
+ to json, check out 
+@jjmontes' answer
+ for a quick solution which requires no dependencies.
+
+
+
+
+As you are using mongoengine (per comments) and pymongo is a dependency, pymongo has built-in utilities to help with json serialization:
+
+
+http://api.mongodb.org/python/1.10.1/api/bson/json_util.html
+
+
+Example usage (serialization):
+
+
+from bson import json_util
+import json
+
+json.dumps(anObject, default=json_util.default)
+
+
+
+Example usage (deserialization):
+
+
+json.loads(aJsonString, object_hook=json_util.object_hook)
+
+
+
+
+
+Django
+
+
+Django provides a native 
+DjangoJSONEncoder
+ serializer that deals with this kind of properly.
+
+
+See 
+https://docs.djangoproject.com/en/dev/topics/serialization/#djangojsonencoder
+
+
+from django.core.serializers.json import DjangoJSONEncoder
+
+return json.dumps(
+  item,
+  sort_keys=True,
+  indent=1,
+  cls=DjangoJSONEncoder
+)
+
+
+
+One difference I've noticed between 
+DjangoJSONEncoder
+ and using a custom 
+default
+ like this:
+
+
+import datetime
+import json
+
+def default(o):
+    if isinstance(o, (datetime.date, datetime.datetime)):
+        return o.isoformat()
+
+return json.dumps(
+  item,
+  sort_keys=True,
+  indent=1,
+  default=default
+)
+
+
+
+Is that Django strips a bit of the data:
+
+
+ ""last_login"": ""2018-08-03T10:51:42.990"", # DjangoJSONEncoder 
+ ""last_login"": ""2018-08-03T10:51:42.990239"", # default
+
+
+
+So, you may need to be careful about that in some cases.
+
+"
+String formatting: % vs. .format vs. f-string literal,"To answer your first question... 
+.format
+ just seems more sophisticated in many ways. An annoying thing about 
+%
+ is also how it can either take a variable or a tuple. You'd think the following would always work:
+
+
+""Hello %s"" % name
+
+
+
+yet, if 
+name
+ happens to be 
+(1, 2, 3)
+, it will throw a 
+TypeError
+. To guarantee that it always prints, you'd need to do
+
+
+""Hello %s"" % (name,)   # supply the single argument as a single-item tuple
+
+
+
+which is just ugly. 
+.format
+ doesn't have those issues. Also in the second example you gave, the 
+.format
+ example is much cleaner looking.
+
+
+Only use it for backwards compatibility with Python 2.5.
+
+
+
+
+To answer your second question, string formatting happens at the same time as any other operation - when the string formatting expression is evaluated. And Python, not being a lazy language, evaluates expressions before calling functions, so the expression 
+log.debug(""some debug info: %s"" % some_info)
+ will first evaluate the string to, e.g. 
+""some debug info: roflcopters are active""
+, then that string will be passed to 
+log.debug()
+.
+
+"
+How do I create multiline comments in Python?,"You can use triple-quoted strings. When they're not a docstring (the first thing in a class/function/module), they are ignored.
+
+
+'''
+This is a multiline
+comment.
+'''
+
+
+
+(Make sure to indent the leading 
+'''
+ appropriately to avoid an 
+IndentationError
+.)
+
+
+Guido van Rossum
+ (creator of Python) 
+tweeted this
+ as a ""pro tip"".
+
+
+However, Python's style guide, PEP8, 
+favors using consecutive single-line comments
+, like this:
+
+
+# This is a multiline
+# comment.
+
+
+
+...and this is also what you'll find in many projects. Text editors usually have a shortcut to do this easily.
+
+"
+Display number with leading zeros,"In Python 2 (and Python 3) you can do:
+
+
+number = 1
+print(""%02d"" % (number,))
+
+
+
+Basically 
+%
+ is like 
+printf
+ or 
+sprintf
+ (see 
+docs
+).
+
+
+
+
+For Python 3.+, the same behavior can also be achieved with 
+format
+:
+
+
+number = 1
+print(""{:02d}"".format(number))
+
+
+
+
+
+For Python 3.6+ the same behavior can be achieved with 
+f-strings
+:
+
+
+number = 1
+print(f""{number:02d}"")
+
+
+"
+Python: how to determine if an object is iterable?,"
+
+Checking for 
+__iter__
+ works on sequence types, but it would fail on e.g. strings 
+in Python 2
+. I would like to know the right answer too, until then, here is one possibility (which would work on strings, too):
+
+
+try:
+    some_object_iterator = iter(some_object)
+except TypeError as te:
+    print(some_object, 'is not iterable')
+
+
+
+The 
+iter
+ built-in checks for the 
+__iter__
+ method or in the case of strings the 
+__getitem__
+ method.
+
+
+
+
+Another general pythonic approach is to assume an iterable, then fail gracefully if it does not work on the given object. The Python glossary:
+
+
+
+
+Pythonic programming style that determines an object's type by inspection of its method or attribute signature rather than by explicit relationship to some type object (""If it looks like a 
+duck
+ and quacks like a 
+duck
+, it must be a 
+duck
+."") By emphasizing interfaces rather than specific types, well-designed code improves its flexibility by allowing polymorphic substitution. Duck-typing avoids tests using type() or isinstance(). 
+Instead, it typically employs the EAFP (Easier to Ask Forgiveness than Permission) style of programming.
+
+
+...
+
+
+try:
+   _ = (e for e in my_object)
+except TypeError:
+   print(my_object, 'is not iterable')
+
+
+
+
+
+
+
+The 
+collections
+ module provides some abstract base classes, which allow to ask classes or instances if they provide particular functionality, for example:
+
+
+from collections.abc import Iterable
+
+if isinstance(e, Iterable):
+    # e is iterable
+
+
+
+However, this does not check for classes that are iterable through 
+__getitem__
+.
+
+
+
+
+
+"
+How do I find the location of my Python site-packages directory?,"There are two types of site-packages directories, 
+global
+ and 
+per user
+.
+
+
+
+
+Global
+ site-packages (""
+dist-packages
+"") directories are listed in 
+sys.path
+ when you run:
+
+
+ python -m site
+
+
+
+For a more concise list run 
+getsitepackages
+ from the 
+site module
+ in Python code:
+
+
+ python -c 'import site; print(site.getsitepackages())'
+
+
+
+Caution:
+ In virtual environments 
+getsitepackages is not available
+ with 
+older versions of 
+virtualenv
+, 
+sys.path
+ from above will list the virtualenv's site-packages directory correctly, though. In Python 3, you may use the 
+sysconfig module
+ instead:
+
+
+ python3 -c 'import sysconfig; print(sysconfig.get_paths()[""purelib""])'
+
+
+
+
+
+The 
+per user
+ site-packages directory (
+PEP 370
+) is where Python installs your local packages:
+
+
+ python -m site --user-site
+
+
+
+If this points to a non-existing directory check the exit status of Python and see 
+python -m site --help
+ for explanations.
+
+
+Hint:
+ Running 
+pip list --user
+ or 
+pip freeze --user
+ gives you a list of all installed 
+per user
+ site-packages.
+
+
+
+
+
+
+
+
+Practical Tips
+
+
+
+
+.__path__
+ lets you identify the location(s) of a specific package: (
+details
+)
+
+
+  $ python -c ""import setuptools as _; print(_.__path__)""
+  ['/usr/lib/python2.7/dist-packages/setuptools']
+
+
+
+
+
+.__file__
+ lets you identify the location of a specific module: (
+difference
+)
+
+
+  $ python3 -c ""import os as _; print(_.__file__)""
+  /usr/lib/python3.6/os.py
+
+
+
+
+
+Run 
+pip show 
+ to show Debian-style package information:
+
+
+  $ pip show pytest
+  Name: pytest
+  Version: 3.8.2
+  Summary: pytest: simple powerful testing with Python
+  Home-page: https://docs.pytest.org/en/latest/
+  Author: Holger Krekel, Bruno Oliveira, Ronny Pfannschmidt, Floris Bruynooghe, Brianna Laugher, Florian Bruhin and others
+  Author-email: None
+  License: MIT license
+  Location: /home/peter/.local/lib/python3.4/site-packages
+  Requires: more-itertools, atomicwrites, setuptools, attrs, pathlib2, six, py, pluggy
+
+
+
+
+
+
+"
+Getting key with maximum value in dictionary?,"You can use 
+operator.itemgetter
+ for that:
+
+
+import operator
+stats = {'a': 1000, 'b': 3000, 'c': 100}
+max(stats.iteritems(), key=operator.itemgetter(1))[0]
+
+
+
+And instead of building a new list in memory use 
+stats.iteritems()
+. The 
+key
+ parameter to the 
+max()
+ function is a function that computes a key that is used to determine how to rank items.
+
+
+Please note that if you were to have another key-value pair 'd': 3000 that this method will only return 
+one
+ of the 
+two
+ even though they both have the maximum value.
+
+
+>>> import operator
+>>> stats = {'a': 1000, 'b': 3000, 'c': 100, 'd': 3000}
+>>> max(stats.iteritems(), key=operator.itemgetter(1))[0]
+'b' 
+
+
+
+If using Python3:
+
+
+>>> max(stats.items(), key=operator.itemgetter(1))[0]
+'b'
+
+
+"
+What does the 'b' character do in front of a string literal?,"To quote 
+the Python 2.x documentation
+:
+
+
+
+
+A prefix of 'b' or 'B' is ignored in
+  Python 2; it indicates that the
+  literal should become a bytes literal
+  in Python 3 (e.g. when code is
+  automatically converted with 2to3). A
+  'u' or 'b' prefix may be followed by
+  an 'r' prefix.
+
+
+
+
+The 
+Python 3 documentation
+ states:
+
+
+
+
+Bytes literals are always prefixed with 'b' or 'B'; they produce an instance of the bytes type instead of the str type. They may only contain ASCII characters; bytes with a numeric value of 128 or greater must be expressed with escapes.
+
+
+
+"
+How do I create a constant in Python?,"You cannot declare a variable or value as constant in Python.
+
+
+
+
+To 
+indicate
+ to programmers that a variable is a constant, one usually writes it in upper case:
+
+
+CONST_NAME = ""Name""
+
+
+
+
+
+To raise exceptions when constants are changed, see 
+Constants in Python
+ by Alex Martelli. Note that this is not commonly used in practice.
+
+
+
+
+As of Python 3.8, there's a 
+typing.Final
+ variable annotation that will tell static type checkers (like mypy) that your variable shouldn't be reassigned. This is the closest equivalent to Java's 
+final
+. However, it 
+does not actually prevent reassignment
+:
+
+
+from typing import Final
+
+a: Final[int] = 1
+
+# Executes fine, but mypy will report an error if you run mypy on this:
+a = 2
+
+
+"
+How do I terminate a script?,"import sys
+sys.exit()
+
+
+
+details from the 
+sys
+ module documentation
+:
+
+
+
+
+sys.
+exit
+([
+arg
+])
+
+
+Exit from Python. This is implemented by raising the
+
+SystemExit
+ exception, so cleanup actions specified by finally clauses
+of 
+try
+ statements are honored, and it is possible to intercept the
+exit attempt at an outer level.
+
+
+The optional argument 
+arg
+ can be an integer giving the exit status
+(defaulting to zero), or another type of object. If it is an integer,
+zero is considered “successful termination” and any nonzero value is
+considered “abnormal termination” by shells and the like. Most systems
+require it to be in the range 0-127, and produce undefined results
+otherwise. Some systems have a convention for assigning specific
+meanings to specific exit codes, but these are generally
+underdeveloped; Unix programs generally use 2 for command line syntax
+errors and 1 for all other kind of errors. If another type of object
+is passed, None is equivalent to passing zero, and any other object is
+printed to 
+stderr
+ and results in an exit code of 1. In particular,
+
+sys.exit(""some error message"")
+ is a quick way to exit a program when
+an error occurs.
+
+
+Since 
+exit()
+ ultimately “only” raises an exception, it will only exit
+the process when called from the main thread, and the exception is not
+intercepted.
+
+
+
+
+Note that this is the 'nice' way to exit.  @
+glyphtwistedmatrix
+ below points out that if you want a 'hard exit', you can use 
+os._exit(*errorcode*)
+, though it's likely os-specific to some extent (it might not take an errorcode under windows, for example), and it definitely is less friendly since it doesn't let the interpreter do any cleanup before the process dies.  On the other hand, it 
+does
+ kill the entire process, including all running threads, while 
+sys.exit()
+ (as it says in the docs) only exits if called from the main thread, with no other threads running.
+
+"
+What is the difference between null=True and blank=True in Django?,"null=True
+ sets 
+NULL
+ (versus 
+NOT NULL
+) on the column in your DB. Blank values for Django field types such as 
+DateTimeField
+ or 
+ForeignKey
+ will be stored as 
+NULL
+ in the DB.
+
+
+blank
+ determines whether the field will be required in forms. This includes the admin and your custom forms. If 
+blank=True
+ then the field will not be required, whereas if it's 
+False
+ the field cannot be blank.
+
+
+The combo of the two is so frequent because typically if you're going to allow a field to be blank in your form, you're going to also need your database to allow 
+NULL
+ values for that field. The exception is 
+CharField
+s and 
+TextField
+s, which in Django are 
+never
+ saved as 
+NULL
+. Blank values are stored in the DB as an empty string (
+''
+).
+
+
+A few examples:
+
+
+models.DateTimeField(blank=True) # raises IntegrityError if blank
+
+models.DateTimeField(null=True) # NULL allowed, but must be filled out in a form
+
+
+
+Obviously, Those two options don't make logical sense to use (though there might be a use case for 
+null=True, blank=False
+ if you want a field to always be required in forms, optional when dealing with an object through something like the shell.)
+
+
+models.CharField(blank=True) # No problem, blank is stored as ''
+
+models.CharField(null=True) # NULL allowed, but will never be set as NULL
+
+
+
+CHAR
+ and 
+TEXT
+ types are never saved as 
+NULL
+ by Django, so 
+null=True
+ is unnecessary. However, you can manually set one of these fields to 
+None
+ to force set it as 
+NULL
+. If you have a scenario where that might be necessary, you should still include 
+null=True
+.
+
+"
+Create a Pandas Dataframe by appending one row at a time,"You can use 
+df.loc[i]
+, where the row with index 
+i
+ will be what you specify it to be in the dataframe.
+
+
+>>> import pandas as pd
+>>> from numpy.random import randint
+
+>>> df = pd.DataFrame(columns=['lib', 'qty1', 'qty2'])
+>>> for i in range(5):
+>>>     df.loc[i] = ['name' + str(i)] + list(randint(10, size=2))
+
+>>> df
+     lib qty1 qty2
+0  name0    3    3
+1  name1    2    4
+2  name2    2    8
+3  name3    2    1
+4  name4    9    6
+
+
+"
+How do I check if a variable exists?,"To check the existence of a local variable:
+
+
+if 'myVar' in locals():
+  # myVar exists.
+
+
+
+To check the existence of a global variable:
+
+
+if 'myVar' in globals():
+  # myVar exists.
+
+
+
+To check if an object has an attribute:
+
+
+if hasattr(obj, 'attr_name'):
+  # obj.attr_name exists.
+
+
+"
+How does the @property decorator work in Python?,"The 
+property()
+ function returns a special 
+descriptor object
+:
+
+
+>>> property()
+
+
+
+
+
+It is this object that has 
+extra
+ methods:
+
+
+>>> property().getter
+
+
+>>> property().setter
+
+
+>>> property().deleter
+
+
+
+
+
+These act as decorators 
+too
+. They return a new property object:
+
+
+>>> property().getter(None)
+
+
+
+
+
+that is a copy of the old object, but with one of the functions replaced.
+
+
+Remember, that the 
+@decorator
+ syntax is just syntactic sugar; the syntax:
+
+
+@property
+def foo(self): return self._foo
+
+
+
+really means the same thing as
+
+
+def foo(self): return self._foo
+foo = property(foo)
+
+
+
+so 
+foo
+ the function is replaced by 
+property(foo)
+, which we saw above is a special object. Then when you use 
+@foo.setter()
+, what you are doing is call that 
+property().setter
+ method I showed you above, which returns a new copy of the property, but this time with the setter function replaced with the decorated method.
+
+
+The following sequence also creates a full-on property, by using those decorator methods.
+
+
+First we create some functions:
+
+
+>>> def getter(self): print('Get!')
+... 
+>>> def setter(self, value): print('Set to {!r}!'.format(value))
+... 
+>>> def deleter(self): print('Delete!')
+... 
+
+
+
+Then, we create a 
+property
+ object with only a getter:
+
+
+>>> prop = property(getter)
+>>> prop.fget is getter
+True
+>>> prop.fset is None
+True
+>>> prop.fdel is None
+True
+
+
+
+Next we use the 
+.setter()
+ method to add a setter:
+
+
+>>> prop = prop.setter(setter)
+>>> prop.fget is getter
+True
+>>> prop.fset is setter
+True
+>>> prop.fdel is None
+True
+
+
+
+Last we add a deleter with the 
+.deleter()
+ method:
+
+
+>>> prop = prop.deleter(deleter)
+>>> prop.fget is getter
+True
+>>> prop.fset is setter
+True
+>>> prop.fdel is deleter
+True
+
+
+
+Last but not least, the 
+property
+ object acts as a 
+descriptor object
+, so it has 
+.__get__()
+, 
+.__set__()
+ and 
+.__delete__()
+ methods to hook into instance attribute getting, setting and deleting:
+
+
+>>> class Foo: pass
+... 
+>>> prop.__get__(Foo(), Foo)
+Get!
+>>> prop.__set__(Foo(), 'bar')
+Set to 'bar'!
+>>> prop.__delete__(Foo())
+Delete!
+
+
+
+The Descriptor Howto includes a 
+pure Python sample implementation
+ of the 
+property()
+ type:
+
+
+
+
+class Property:
+    ""Emulate PyProperty_Type() in Objects/descrobject.c""
+
+    def __init__(self, fget=None, fset=None, fdel=None, doc=None):
+        self.fget = fget
+        self.fset = fset
+        self.fdel = fdel
+        if doc is None and fget is not None:
+            doc = fget.__doc__
+        self.__doc__ = doc
+
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self
+        if self.fget is None:
+            raise AttributeError(""unreadable attribute"")
+        return self.fget(obj)
+
+    def __set__(self, obj, value):
+        if self.fset is None:
+            raise AttributeError(""can't set attribute"")
+        self.fset(obj, value)
+
+    def __delete__(self, obj):
+        if self.fdel is None:
+            raise AttributeError(""can't delete attribute"")
+        self.fdel(obj)
+
+    def getter(self, fget):
+        return type(self)(fget, self.fset, self.fdel, self.__doc__)
+
+    def setter(self, fset):
+        return type(self)(self.fget, fset, self.fdel, self.__doc__)
+
+    def deleter(self, fdel):
+        return type(self)(self.fget, self.fset, fdel, self.__doc__)
+
+
+
+
+"
+How can I do a line break (line continuation) in Python (split up a long line of source code)?,"What is the line?  You can just have arguments on the next line without any problems:
+
+
+a = dostuff(blahblah1, blahblah2, blahblah3, blahblah4, blahblah5, 
+            blahblah6, blahblah7)
+
+
+
+Otherwise you can do something like this:
+
+
+if (a == True and
+    b == False):
+
+
+
+or with explicit line break:
+
+
+if a == True and \
+   b == False:
+
+
+
+Check the 
+style guide
+ for more information.
+
+
+Using parentheses, your example can be written over multiple lines:
+
+
+a = ('1' + '2' + '3' +
+    '4' + '5')
+
+
+
+The same effect can be obtained using explicit line break:
+
+
+a = '1' + '2' + '3' + \
+    '4' + '5'
+
+
+
+Note that the style guide says that using the implicit continuation with parentheses is preferred, but in this particular case just adding parentheses around your expression is probably the wrong way to go.
+
+"
+How can I read a text file into a string variable and strip newlines?,"You could use:
+
+
+with open('data.txt', 'r') as file:
+    data = file.read().replace('\n', '')
+
+
+
+Or if the file content is guaranteed to be one line:
+
+
+with open('data.txt', 'r') as file:
+    data = file.read().rstrip()
+
+
+"
+How do I reverse a list or loop over it backwards?,"To get a 
+new
+ reversed list, apply the 
+reversed
+ function and collect the items into a 
+list
+:
+
+
+>>> xs = [0, 10, 20, 40]
+>>> list(reversed(xs))
+[40, 20, 10, 0]
+
+
+
+To iterate backwards through a list:
+
+
+>>> xs = [0, 10, 20, 40]
+>>> for x in reversed(xs):
+...     print(x)
+40
+20
+10
+0
+
+
+"
+What is a mixin and why is it useful?,"A mixin is a special kind of multiple inheritance.  There are two main situations where mixins are used:
+
+
+
+
+You want to provide a lot of optional features for a class.
+
+
+You want to use one particular feature in a lot of different classes.
+
+
+
+
+For an example of number one, consider 
+werkzeug's request and response system
+.  I can make a plain old request object by saying:
+
+
+from werkzeug import BaseRequest
+
+class Request(BaseRequest):
+    pass
+
+
+
+If I want to add accept header support, I would make that
+
+
+from werkzeug import BaseRequest, AcceptMixin
+
+class Request(AcceptMixin, BaseRequest):
+    pass
+
+
+
+If I wanted to make a request object that supports accept headers, etags, authentication, and user agent support, I could do this:
+
+
+from werkzeug import BaseRequest, AcceptMixin, ETagRequestMixin, UserAgentMixin, AuthenticationMixin
+
+class Request(AcceptMixin, ETagRequestMixin, UserAgentMixin, AuthenticationMixin, BaseRequest):
+    pass
+
+
+
+The difference is subtle, but in the above examples, the mixin classes weren't made to stand on their own.  In more traditional multiple inheritance, the 
+AuthenticationMixin
+ (for example) would probably be something more like 
+Authenticator
+.  That is, the class would probably be designed to stand on its own.
+
+"
+Putting a simple if-then-else statement on one line,"That's more specifically a 
+ternary operator
+ expression than an if-then, here's the python syntax
+
+
+value_when_true if condition else value_when_false
+
+
+
+Better Example:
+ (thanks 
+Mr. Burns
+)
+
+
+'Yes' if fruit == 'Apple' else 'No'
+
+
+
+Now with assignment and contrast with if syntax
+
+
+fruit = 'Apple'
+isApple = True if fruit == 'Apple' else False
+
+
+
+vs
+
+
+fruit = 'Apple'
+isApple = False
+if fruit == 'Apple' : isApple = True
+
+
+"
+Correct way to write line to file?,"This should be as simple as:
+
+
+with open('somefile.txt', 'a') as the_file:
+    the_file.write('Hello\n')
+
+
+
+From The Documentation:
+
+
+
+
+Do not use 
+os.linesep
+ as a line terminator when writing files opened in text mode (the default); use a single 
+'\n'
+ instead, on all platforms.
+
+
+
+
+Some useful reading:
+
+
+
+
+The 
+with
+ statement
+
+
+open()
+
+
+
+
+'a'
+ is for append, or use
+
+
+'w'
+ to write with truncation
+
+
+
+
+
+
+os
+ (particularly 
+os.linesep
+)
+
+
+
+"
+Use a list of values to select rows from a Pandas dataframe,"You can use the 
+isin
+ method:
+
+
+In [1]: df = pd.DataFrame({'A': [5,6,3,4], 'B': [1,2,3,5]})
+
+In [2]: df
+Out[2]:
+   A  B
+0  5  1
+1  6  2
+2  3  3
+3  4  5
+
+In [3]: df[df['A'].isin([3, 6])]
+Out[3]:
+   A  B
+1  6  2
+2  3  3
+
+
+
+And to get the opposite use 
+~
+:
+
+
+In [4]: df[~df['A'].isin([3, 6])]
+Out[4]:
+   A  B
+0  5  1
+3  4  5
+
+
+"
+"Extract file name from path, no matter what the os/path format","Using 
+os.path.split
+ or 
+os.path.basename
+ as others suggest won't work in all cases: if you're running the script on Linux and attempt to process a classic windows-style path, it will fail.
+
+
+Windows paths can use either backslash or forward slash as path separator. Therefore, the 
+ntpath
+ module (which is equivalent to os.path when running on windows) will work for all
+(1)
+ paths on all platforms.
+
+
+import ntpath
+ntpath.basename(""a/b/c"")
+
+
+
+Of course, if the file ends with a slash, the basename will be empty, so make your own function to deal with it:
+
+
+def path_leaf(path):
+    head, tail = ntpath.split(path)
+    return tail or ntpath.basename(head)
+
+
+
+Verification:
+
+
+>>> paths = ['a/b/c/', 'a/b/c', '\\a\\b\\c', '\\a\\b\\c\\', 'a\\b\\c', 
+...     'a/b/../../a/b/c/', 'a/b/../../a/b/c']
+>>> [path_leaf(path) for path in paths]
+['c', 'c', 'c', 'c', 'c', 'c', 'c']
+
+
+
+
+
+(1) There's one caveat: Linux filenames 
+may contain backslashes
+. So on linux, 
+r'a/b\c'
+ always refers to the file 
+b\c
+ in the 
+a
+ folder, while on Windows, it always refers to the 
+c
+ file in the 
+b
+ subfolder of the 
+a
+ folder. So when both forward and backward slashes are used in a path, you 
+need
+ to know the associated platform to be able to interpret it correctly. In practice it's usually safe to assume it's a windows path since backslashes are seldom used in Linux filenames, but keep this in mind when you code so you don't create accidental security holes.
+
+"
+Get a list from Pandas DataFrame column headers,"You can get the values as a list by doing:
+
+
+list(my_dataframe.columns.values)
+
+
+
+Also you can simply use (as shown in 
+Ed Chum's answer
+):
+
+
+list(my_dataframe)
+
+
+"
+How do I trim whitespace from a string?,"To remove all whitespace surrounding a string, use 
+.strip()
+. Examples:
+
+
+>>> ' Hello '.strip()
+'Hello'
+>>> ' Hello'.strip()
+'Hello'
+>>> 'Bob has a cat'.strip()
+'Bob has a cat'
+>>> '   Hello   '.strip()  # ALL consecutive spaces at both ends removed
+'Hello'
+
+
+
+Note that 
+str.strip()
+ removes all whitespace characters, including tabs and newlines. To remove only spaces, specify the specific character to remove as an argument to 
+strip
+:
+
+
+>>> ""  Hello\n  "".strip("" "")
+'Hello\n'
+
+
+
+
+
+To remove only one space at most:
+
+
+def strip_one_space(s):
+    if s.endswith("" ""): s = s[:-1]
+    if s.startswith("" ""): s = s[1:]
+    return s
+
+>>> strip_one_space(""   Hello "")
+'  Hello'
+
+
+"
+How do I remove all packages installed by pip?,"I've found this snippet as an alternative solution. It's a more graceful removal of libraries than remaking the virtualenv:
+
+
+pip freeze | xargs pip uninstall -y
+
+
+
+
+
+In case you have packages installed via VCS, you need to exclude those lines and remove the packages manually (elevated from the comments below):
+
+
+pip freeze --exclude-editable | xargs pip uninstall -y
+
+
+
+
+
+If you have packages installed directly from github/gitlab, those will have 
+@
+.
+Like:
+
+
+django @ git+https://github.com/django.git@
+
+
+You can add 
+cut -d ""@"" -f1
+ to get just the package name that is required to uninstall it.
+
+
+pip freeze | cut -d ""@"" -f1 | xargs pip uninstall -y
+
+
+"
+How does Python's super() work with multiple inheritance?,"This is detailed with a reasonable amount of detail by Guido himself in his blog post 
+Method Resolution Order
+ (including two earlier attempts).
+
+
+In your example, 
+Third()
+ will call 
+First.__init__
+. Python looks for each attribute in the class's parents as they are listed left to right. In this case, we are looking for 
+__init__
+. So, if you define
+
+
+class Third(First, Second):
+    ...
+
+
+
+Python will start by looking at 
+First
+, and, if 
+First
+ doesn't have the attribute, then it will look at 
+Second
+.
+
+
+This situation becomes more complex when inheritance starts crossing paths (for example if 
+First
+ inherited from 
+Second
+). Read the link above for more details, but, in a nutshell, Python will try to maintain the order in which each class appears on the inheritance list, starting with the child class itself.
+
+
+So, for instance, if you had:
+
+
+class First(object):
+    def __init__(self):
+        print ""first""
+
+class Second(First):
+    def __init__(self):
+        print ""second""
+
+class Third(First):
+    def __init__(self):
+        print ""third""
+
+class Fourth(Second, Third):
+    def __init__(self):
+        super(Fourth, self).__init__()
+        print ""that's it""
+
+
+
+the MRO would be 
+[Fourth, Second, Third, First].
+
+
+By the way: if Python cannot find a coherent method resolution order, it'll raise an exception, instead of falling back to behavior which might surprise the user.
+
+
+Example of an ambiguous MRO:
+
+
+class First(object):
+    def __init__(self):
+        print ""first""
+        
+class Second(First):
+    def __init__(self):
+        print ""second""
+
+class Third(First, Second):
+    def __init__(self):
+        print ""third""
+
+
+
+Should 
+Third
+'s MRO be 
+[First, Second]
+ or 
+[Second, First]
+? There's no obvious expectation, and Python will raise an error:
+
+
+TypeError: Error when calling the metaclass bases
+    Cannot create a consistent method resolution order (MRO) for bases Second, First
+
+
+
+Why do the examples above lack 
+super()
+ calls? The point of the examples is to show how the MRO is constructed. They are 
+not
+ intended to print 
+""first\nsecond\third""
+ or whatever. You can – and should, of course, play around with the example, add 
+super()
+ calls, see what happens, and gain a deeper understanding of Python's inheritance model. But my goal here is to keep it simple and show how the MRO is built. And it is built as I explained:
+
+
+>>> Fourth.__mro__
+(
+,
+ 
+, 
+,
+ 
+,
+ 
+)
+
+
+"
+How do I return dictionary keys as a list in Python?,"This will convert the 
+dict_keys
+ object to a 
+list
+:
+
+
+list(newdict.keys())
+
+
+
+
+
+On the other hand, you should ask yourself whether or not it matters. It is Pythonic to assume 
+duck typing
+ -- 
+if it looks like a duck and it quacks like a duck, it is a duck
+. The 
+dict_keys
+ object can be 
+iterated
+ over just like a 
+list
+. For instance:
+
+
+for key in newdict.keys():
+    print(key)
+
+
+
+Note that 
+dict_keys
+ doesn't support insertion 
+newdict[k] = v
+, though you may not need it.
 
 "

@@ -1,4 +1,4 @@
-question,expected,generated,BLEU,ROUGE-L,METEOR,BERTScore_F1,Cosine_Similarity
+question,expected,generated
 "What does the ""yield"" keyword do in Python?","To understand what 
 yield
  does, you must understand what 
@@ -370,7 +370,7 @@ for
 .
 
 ","The `yield` keyword in Python creates a generator function.  When called, this function returns a generator object, not a single value.  Upon encountering `yield`, the generator outputs a value (similar to `return`), but its execution state and local variables are preserved.  The function resumes from where it left off on the next call to the generator's `__next__()` method.
-",1.7613098272936104e-11,0.049689440993788817,0.01858316349533858,0.4799310564994812,0.59709424
+"
 "What does if __name__ == ""__main__"": do?","Short Answer
 
 
@@ -801,7 +801,7 @@ print(""after __name__ guard"")
 
 
 ","The `if __name__ == ""__main__"":` block conditionally executes code only when the module is run directly (not imported as a module into another script).  It prevents code within the block from running unintentionally if the module is imported for use in another script.
-",2.9056363811564502e-89,0.04472843450479234,0.017454751082543813,0.5660809278488159,0.5915135
+"
 Does Python have a ternary conditional operator?,"Yes, it was 
 added
  in version 2.5. The expression syntax is:
@@ -1010,7 +1010,7 @@ Is there an equivalent of C’s ”?:” ternary operator?
 
 
 ","Yes, Python has a ternary conditional operator with the syntax `[on_true] if [expression] else [on_false]`.  Prior to Python 2.5,  `[expression] and [on_true] or [on_false]` was used, but this is considered unsafe.
-",1.0201216647293888e-163,0.05546995377503852,0.02195389681668496,0.5194932818412781,0.66453177
+"
 What are metaclasses in Python?,"A metaclass is the class of a class. A class defines how an instance of the class (i.e. an object) behaves while a metaclass defines how a class behaves. A class is an instance of a metaclass.
 
 
@@ -1137,7 +1137,7 @@ print ExampleSibling.__mro__
 
 
 ","In Python, a metaclass is responsible for taking a class name, a class dictionary, and a list of base classes to create a class.  Most other object-oriented programming languages have a default implementation, but Python allows the creation of custom metaclasses for powerful solutions, though most users won't need them.
-",1.7300985784445816e-159,0.06917293233082707,0.03277750763162871,0.565085232257843,0.80755436
+"
 How do I merge two dictionaries in a single expression in Python?,"How can I merge two Python dictionaries in a single expression?
 
 
@@ -1694,7 +1694,7 @@ Modern Python Dictionaries, A Confluence of Great Ideas
 
 
 ","I'm sorry, I couldn't find relevant information in the provided context.
-",2.9431563497382985e-227,0.006113092205807438,0.0022184575669570833,0.3045409917831421,0.020144407
+"
 How do I execute a program or call a system command?,"Use 
 subprocess.run
 :
@@ -1737,7 +1737,7 @@ subprocess.call([""ls"", ""-l""])
 
 
 ","If `args` is a string, the string specifies the command to execute through the shell.  The string must be formatted exactly as it would be at a shell prompt (including quoting or escaping filenames with spaces).  If `args` is a sequence, the first item is the command, and additional items are arguments to the shell.  For maximum reliability, use a fully qualified path for the executable.
-",2.5848737861631878e-155,0.14012738853503184,0.1076233183856502,0.5037705302238464,0.39579612
+"
 "How do I create a directory, and any missing parent directories?","On Python ≥ 3.5, use 
 pathlib.Path.mkdir
 :
@@ -1827,7 +1827,7 @@ os.makedirs(""path/to/directory"", exist_ok=True)  # succeeds even if directory 
 
 
 ","The provided text describes the `makedirs()` function's behavior, stating that it creates directories as needed, mimicking the POSIX `mkdir -p` command.  It creates missing parent directories if the `parents` parameter is true (it's false by default).  If `exist_ok` is false (the default), an error is raised if the target directory already exists.
-",6.75836380155736e-157,0.09836065573770492,0.07599073127825834,0.518578052520752,0.65678155
+"
 How to access the index value in a 'for' loop?,"Use the built-in function 
 enumerate()
 :
@@ -1850,7 +1850,7 @@ PEP 279
  for more.
 
 ","I'm sorry, I couldn't find relevant information in the provided context.
-",8.52038995356238e-233,0.06896551724137931,0.05154639175257732,0.360601007938385,-0.019040432
+"
 How do I make a flat list out of a list of lists?,"A list of lists named 
 xss
  can be flattened using a nested 
@@ -1920,7 +1920,7 @@ M * (L**2)/2
 The list comprehension just generates one list, once, and copies each item over (from its original place of residence to the result list) also exactly once.
 
 ","Use the `flatten` function, which utilizes `chain.from_iterable(list_of_lists)`.
-",3.5757767788502127e-249,0.04191616766467066,0.010438413361169102,0.4341218173503876,0.5447314
+"
 What is the difference between @staticmethod and @classmethod in Python?,"Maybe a bit of example code will help: Notice the difference in the call signatures of 
 foo
 , 
@@ -2088,7 +2088,7 @@ print(A.static_foo)
 
 
 ","Static methods in Python are similar to those in Java or C++.  They can be called on the class (e.g., `C.f()`) or an instance (e.g., `C().f()`).  The context also mentions `classmethod()` as a variant useful for creating alternate class constructors.
-",1.4814256282687364e-158,0.0650759219088937,0.04663981344074623,0.5408914685249329,0.68939865
+"
 How slicing in Python works,"The syntax is:
 
 
@@ -2204,7 +2204,7 @@ slice()
  objects simplifies the programmatic generation of slicing.
 
 ","Python slicing extracts a portion of a sequence (like a string or list).  It uses square brackets `[]` with a start index (inclusive), an end index (exclusive), and an optional step.  For example, `word[:2]` extracts characters from the beginning up to (but not including) index 2.  `word[4:]` extracts from index 4 to the end. Negative indices count from the end.  The expression `s[:i] + s[i:]` is always equal to the original sequence `s`.  Think of indices as points between characters, with the left edge of the first character at index 0.
-",1.128350375675458e-79,0.11946902654867256,0.09962114927271723,0.555908203125,0.51798296
+"
 How to find the index for a given item in a list?,">>> [""foo"", ""bar"", ""baz""].index(""bar"")
 1
 
@@ -2349,7 +2349,7 @@ What is the EAFP principle in Python?
  for more guidance on this choice.
 
 ","Use the `index(x[, start[, end]])` method.  It returns the zero-based index of the first item equal to `x`.  Optional `start` and `end` arguments specify a subsequence to search within.  A `ValueError` is raised if `x` is not found.
-",1.0743414547399693e-06,0.10928961748633881,0.04508856682769727,0.5986336469650269,0.75796413
+"
 Iterating over dictionaries using 'for' loops,"key
  is just a variable name.  
 
@@ -2405,7 +2405,7 @@ list(d.items())
 .
 
 ","When looping through dictionaries, the key and corresponding value can be retrieved simultaneously using the `items()` method.  For example: `for k, v in knights.items(): print(k, v)`
-",4.553790378199929e-157,0.15217391304347827,0.08907480479386831,0.5545881390571594,0.71868587
+"
 How can I iterate over rows in a Pandas DataFrame?,"DataFrame.iterrows
  is a generator which yields both the index and row (as a Series):
 
@@ -2465,7 +2465,7 @@ enhancing performance
 Other answers in this thread delve into greater depth on alternatives to iter* functions if you are interested to learn more.
 
 ","I'm sorry, I couldn't find relevant information in the provided context.
-",7.08494894434863e-239,0.01886792452830189,0.013245033112582781,0.3445732295513153,-0.061013475
+"
 How can I use a global variable in a function?,"You can use a global variable within other functions by declaring it as 
 global
  
@@ -2497,7 +2497,7 @@ global
 See other answers if you want to share a global variable across modules.
 
 ","To use a global variable in a function, you must explicitly declare it as `global` within the function before assigning a value to it.  If you only reference (read) the global variable, the `global` declaration is not needed.
-",0.019527422032967427,0.27814569536423844,0.16633187241295347,0.5854522585868835,0.6265702
+"
 How do I get the current time in Python?,"Use 
 datetime
 :
@@ -2540,7 +2540,7 @@ datetime.
  from all of the above.
 
 ","The provided text mentions `datetime.now()` and `datetime.utcnow()`.  `datetime.now()` gets the current date and time, potentially converting to a specified timezone. `datetime.utcnow()` gets the current UTC date and time.  More specific instructions on usage are not available in the context.
-",4.5612677145466266e-232,0.19999999999999998,0.10057493253342722,0.5544090867042542,0.5532727
+"
 "How to catch multiple exceptions in one line? (in the ""except"" block)","From 
 Python Documentation
 :
@@ -2571,7 +2571,7 @@ as
 .
 
 ","An except clause may name multiple exceptions as a parenthesized tuple, for example:  `except (RuntimeError, TypeError, NameError):`
-",0.033622005492055386,0.32941176470588235,0.2247836307297788,0.6270117163658142,0.80148506
+"
 How do I copy a file?,"shutil
  has many methods you can use. One of which is:
 
@@ -2642,7 +2642,7 @@ copyfile
  will only accept strings.
 
 ","To copy a file `src` to `dst`, use the `copy()` function.  If `dst` is a directory, the file will be copied into that directory using the original filename. If `dst` is an existing file, it will be replaced.  The `follow_symlinks` parameter controls how symbolic links are handled.  The function returns the path to the newly created file.
-",0.0172702089451766,0.2048780487804878,0.16003748488512695,0.5987480878829956,0.54197663
+"
 What is __init__.py for?,"It used to be a required part of a package (
 old, pre-3.3 ""regular package""
 , not 
@@ -2671,7 +2671,7 @@ __init__.py
 .
 
 ","`__init__.py` files are required to make Python treat directories as packages (unless using namespace packages).  They can be empty, but can also contain initialization code for the package or set the `__all__` variable.  When a package is imported, its `__init__.py` file is implicitly executed, and the objects it defines are bound to names in the package's namespace.
-",0.07631721607364186,0.3106796116504854,0.21490717918150135,0.6998297572135925,0.82585895
+"
 Convert bytes to a string in Python 3,"Decode the 
 bytes
  object
@@ -2690,7 +2690,7 @@ bytes
  object is in UTF-8, because it is a common encoding. However, you should use the encoding your data is actually in!
 
 ","The provided text describes converting a hexadecimal string to a bytes object using `bytes.fromhex()`, and converting a bytes object to its hexadecimal representation using the `.hex()` method.  It does *not* explain how to convert a bytes object to a string representing its *character* content.  Therefore, I'm sorry, I couldn't find relevant information in the provided context.
-",1.4495342242928527e-78,0.1764705882352941,0.21026363549527174,0.5222485065460205,0.6202
+"
 What is the difference between __str__ and __repr__?,"
 
 Alex Martelli summarized well
@@ -2844,7 +2844,7 @@ __str__
  if you think it would be useful to have a string version which errs on the side of readability.
 
 ","`str()` aims for a human-readable representation, while `repr()` generates a representation that can be interpreted by Python, ideally recreating the object.  If a class defines `__repr__()` but not `__str__()`, `__repr__()` is also used for the informal string representation (e.g., for printing or debugging).  For many objects, both functions return the same value.  Strings themselves have distinct representations for each.
-",9.357605179765278e-160,0.05985037406483791,0.041195856873822975,0.5695877075195312,0.61296314
+"
 How do I select rows from a DataFrame based on column values?,"To select rows whose column value equals a scalar, 
 some_value
 , use 
@@ -3041,7 +3041,7 @@ one  foo  6  12
 
 
 ","I'm sorry, I couldn't find relevant information in the provided context.
-",3.558293467298744e-171,0.008602150537634409,0.006378713322398395,0.2706823945045471,0.018170033
+"
 How can I add new keys to a dictionary?,"You create a new key/value pair on a dictionary by assigning a value to that key
 
 
@@ -3057,7 +3057,7 @@ print(d)  # {'key': 'value', 'mynewkey': 'mynewvalue'}
 If the key doesn't exist, it's added and points to that value. If it exists, the current value it points to is overwritten.
 
 ","To add a key-value pair to a dictionary, you can use the assignment operator (`=`).  If the key already exists, its value will be overwritten.
-",7.062311169243515e-79,0.3132530120481928,0.18537674216027875,0.6133730411529541,0.8255694
+"
 Does Python have a string 'contains' substring method?,"Use the 
 in
  operator
@@ -3072,7 +3072,7 @@ if ""blah"" not in somestring:
 Note: This is case-sensitive.
 
 ","I'm sorry, I couldn't find relevant information in the provided context.
-",8.269750081803823e-232,0.07142857142857144,0.07692307692307691,0.3905266523361206,-0.005423583
+"
 How can I delete a file or folder in Python?,"Use one of these methods:
 
 
@@ -3127,7 +3127,7 @@ os.rmdir()
 
 
 ","To delete a file, use `os.remove(filename)` or `os.unlink(filename)`.  To remove a directory, use `os.rmdir()`.  To delete an entire directory tree and its contents, use `shutil.rmtree()`.
-",4.295504903434033e-232,0.276595744680851,0.2794966236955187,0.6570448279380798,0.8131365
+"
 """Least Astonishment"" and the Mutable Default Argument","Actually, this is not a design flaw, and it is not because of internals or performance. It comes simply from the fact that functions in Python are 
 first-class objects
 , and not only a piece of code.
@@ -3147,7 +3147,7 @@ Default Parameter Values in Python
 . I found it very clear, and I really suggest reading it for a better knowledge of how function objects work.
 
 ","Mutable objects (like lists and dictionaries) used as default arguments in function definitions are evaluated only once, when the function is defined.  Subsequent calls to the function will modify this single, shared object, leading to unexpected behavior.  Immutable objects (numbers, strings, tuples, None) are safe from this issue.  Therefore, it's best practice to avoid mutable objects as default argument values.
-",1.416793438986887e-155,0.13612565445026178,0.16773529203267978,0.5034290552139282,0.70520383
+"
 What does ** (double star/asterisk) and * (star/asterisk) do for parameters?,"The 
 *args
  and 
@@ -3277,7 +3277,7 @@ What’s New In Python 3.6
 In fact, all dicts in CPython 3.6 will remember insertion order as an implementation detail, and this becomes standard in Python 3.7.
 
 ","In a function's parameter list, `*identifier` creates a tuple containing any excess positional arguments, defaulting to an empty tuple.  `**identifier` creates an ordered mapping (like a dictionary) containing any excess keyword arguments, defaulting to an empty mapping of the same type.
-",3.839854635822819e-158,0.07197943444730077,0.041110329601625535,0.4772016108036041,0.52154875
+"
 How can I access environment variables in Python?,"Environment variables are accessed through 
 os.environ
 :
@@ -3313,7 +3313,7 @@ print(os.getenv('KEY_THAT_MIGHT_EXIST', default_value))
 
 
 ","Use `os.getenv(key, default=None)`.  This returns the value of the environment variable `key` as a string if it exists, otherwise it returns `default`.
-",1.85177492737724e-232,0.20168067226890754,0.16942474389282905,0.6049274206161499,0.7691438
+"
 How do I sort a dictionary by value?,"Python 3.7+ or CPython 3.6
 
 
@@ -3387,7 +3387,7 @@ sorted_dict = collections.OrderedDict(sorted_x)
 
 
 ","I'm sorry, I couldn't find relevant information in the provided context.
-",9.879042362764825e-241,0.014336917562724013,0.009954493742889647,0.2832165062427521,0.0071423166
+"
 How do I clone a list so that it doesn't change unexpectedly after assignment?,"new_list = my_list
  doesn't actually create a second list. The assignment just copies the reference to the list, not the actual list, so both 
 new_list
@@ -3517,7 +3517,7 @@ deepcopy: ['foo', Foo(1)]
 
 
 ","Simple assignment in Python creates only a reference, not a copy. To create a list copy that avoids unexpected changes after assignment, use the approach: `A = [None] * 3` followed by a loop: `for i in range(3): A[i] = [None] * 2`.  This creates a new list for each element instead of referencing the same object multiple times.
-",1.7118443041504536e-156,0.11019283746556474,0.06421688500727801,0.5453493595123291,0.710426
+"
 How do I pass a variable by reference?,"Arguments are 
 passed by assignment
 . The rationale behind this is twofold:
@@ -3713,7 +3713,7 @@ do_something_with(wrapper[0])
 Although this seems a little cumbersome.
 
 ","Python uses call by assignment.  There's no direct call-by-reference.  The provided text explains that you can achieve a similar effect using several methods, but it doesn't specify what those methods are.
-",7.683872708267242e-164,0.03823178016726404,0.016084558823529414,0.4412056505680084,0.49104416
+"
 Manually raising (throwing) an exception in Python,"
 
 How do I manually throw/raise an exception in Python?
@@ -4044,7 +4044,7 @@ if important_key not in resource_dict and not ok_to_be_missing:
 
 
 ","The `raise` statement forces a specified exception.  The argument to `raise` is either an exception instance or class (inheriting from `BaseException`).  For example: `raise NameError('HiThere')`.
-",3.961204966920239e-170,0.031496062992125984,0.014463298360783857,0.53243088722229,0.5875827
+"
 Understanding Python super() with __init__() methods,"super()
  lets you avoid referring to the base class explicitly, which can be nice. But the main advantage comes with multiple inheritance, where all sorts of 
 fun stuff
@@ -4065,7 +4065,7 @@ super()
  which is quite explanatory.
 
 ","If a derived class has an `__init__()` method and its base class also has one, the derived class's `__init__()` must explicitly call the base class's `__init__()` using `super().__init__([args.])` to properly initialize the base class part of the instance.  Failing to do so will result in improper initialization.
-",7.73806236948933e-79,0.13333333333333333,0.2156489814973764,0.5805691480636597,0.6027806
+"
 How do I concatenate two lists in Python?,"Use the 
 +
  operator to combine the lists:
@@ -4091,7 +4091,7 @@ copy.deepcopy()
  to get deep copies of lists.
 
 ","I'm sorry, I couldn't find relevant information in the provided context.
-",2.565569994436291e-157,0.05128205128205129,0.05512549847525216,0.3456485867500305,-0.05173756
+"
 How do I check if a list is empty?,"if not a:
     print(""List is empty"")
 
@@ -4104,7 +4104,7 @@ list
  is quite Pythonic.
 
 ","The provided text mentions that `list.pop()` raises an `IndexError` if the list is empty.  It also states that `list.clear()` removes all items from a list.  However, it does not explicitly explain how to directly check if a list is empty.
-",3.7147439042370906e-155,0.2,0.35525321239606955,0.5407970547676086,0.68691814
+"
 How do I make function decorators and chain them together?,"Check out 
 the documentation
  to see how decorators work. Here is what you asked for:
@@ -4148,7 +4148,7 @@ hello
 
 
 ","Decorator expressions are evaluated when the function is defined.  The result must be a callable, which is invoked with the function object as the only argument. The returned value is then bound to the function name. Multiple decorators are applied in a nested fashion.
-",3.803845285485357e-232,0.06349206349206349,0.03022162525184688,0.41790321469306946,0.61946416
+"
 How do I split a list into equally-sized chunks?,"Here's a generator that yields evenly-sized chunks:
 
 
@@ -4201,7 +4201,7 @@ For Python 2:
 
 
 ","I'm sorry, I couldn't find relevant information in the provided context.
-",5.782453372568084e-238,0.03902439024390244,0.009372071227741332,0.2782183587551117,-0.0023887902
+"
 What is the difference between Python's list methods append and extend?,".append()
  appends a 
 single object
@@ -4228,7 +4228,7 @@ multiple objects
 
 
 ","`append(x)` adds a single item `x` to the end of the list.  `extend(iterable)` adds all items from an iterable (like another list or tuple) to the end of the list.
-",0.04316409733623303,0.25882352941176473,0.11956726246472246,0.5732249021530151,0.7954441
+"
 Find the current directory and file's directory,"To get the full path to the directory a Python file is contained in, write this in that file:
 
 
@@ -4305,7 +4305,7 @@ path
 
 
 ","`os.getcwd()` gets the current working directory, and while the provided text mentions functions to get file paths (`os.path.abspath()`, `os.path.realpath()`), it doesn't show how to get the directory of a specific file.
-",9.14285710739967e-80,0.17616580310880828,0.12183854228022292,0.6307137608528137,0.7949343
+"
 "Why is ""1000000000000000 in range(1000000000000001)"" so fast in Python 3?","The Python 3 
 range()
  object doesn't produce numbers immediately; it is a smart 
@@ -4425,7 +4425,7 @@ Near
  constant time because Python integers are unbounded and so math operations also grow in time as N grows, making this a O(log N) operation. Since it’s all executed in optimised C code and Python stores integer values in 30-bit chunks, you’d run out of memory before you saw any performance impact due to the size of the integers involved here.
 
 ","I'm sorry, I couldn't find relevant information in the provided context.
-",6.195710317274865e-174,0.015873015873015872,0.0071723148646225575,0.29339680075645447,-0.056736194
+"
 Renaming column names in Pandas,"Just assign it to the 
 .columns
  attribute:
@@ -4445,7 +4445,7 @@ Renaming column names in Pandas,"Just assign it to the
 
 
 ","I'm sorry, I couldn't find relevant information in the provided context.
-",8.593391654994864e-233,0.0392156862745098,0.028985507246376815,0.27284303307533264,-0.029637652
+"
 "Convert string ""Jun 1 2005 1:33PM"" into datetime","datetime.strptime
  parses an input string in the user-specified format into a 
 timezone-naive
@@ -4530,7 +4530,7 @@ date_string = ""Jun 1 2005 1:33PM""
 datetime_object = datetime.strptime(date_string, ""%b %d %Y %I:%M%p"")
 print(datetime_object) 
 ```
-",0.00467911381771716,0.272,0.11768901569186876,0.6858302354812622,0.79270405
+"
 How can I remove a key from a Python dictionary?,"To delete a key regardless of whether it is in the dictionary, use the two-argument form of 
 dict.pop()
 :
@@ -4567,7 +4567,7 @@ KeyError
  if the key is not in the dictionary.
 
 ","The `pop(key[, default])` method removes a key and returns its value if the key exists; otherwise, it returns a default value or raises a `KeyError`.  The `del` keyword can also remove a key:value pair.
-",5.861549730722912e-79,0.25,0.1788145892950052,0.6101515293121338,0.63279045
+"
 How to upgrade all Python packages with pip,"There isn't a built-in flag yet. Starting with pip version 22.3, the 
 --outdated
  and 
@@ -4641,7 +4641,7 @@ Note:
  there are infinite potential variations for this. I'm trying to keep this answer short and simple, but please do suggest variations in the comments!
 
 ","To upgrade a package to the latest version, use the command `python -m pip install --upgrade SomePackage`.  To upgrade all packages, the provided text does not offer a single command solution.
-",4.9658552604524866e-157,0.0970873786407767,0.052486485695003346,0.5143290758132935,0.51941043
+"
 How to sort a list of dictionaries by a value of the dictionary in Python?,"The 
 sorted()
  function takes a 
@@ -4672,7 +4672,7 @@ newlist = sorted(list_to_be_sorted, key=itemgetter('name'), reverse=True)
 
 
 ","The provided text shows how to sort a list using a key function with `sorted()` and `list.sort()`,  but it doesn't give a direct example of sorting a list of dictionaries by a dictionary value.
-",2.8342059712467828e-155,0.22000000000000003,0.13878981862520956,0.4987386167049408,0.6380605
+"
 How do I get the last element of a list?,"some_list[-1]
  is the shortest and most Pythonic.
 
@@ -4708,7 +4708,7 @@ some_list
  is empty, because an empty list can't have a last element.
 
 ","`list.pop()` removes and returns the last item in the list.  If the list is empty, it raises an `IndexError`.
-",2.0688055689406375e-157,0.15662650602409636,0.06072874493927125,0.5372001528739929,0.48433843
+"
 How to leave/exit/deactivate a Python virtualenv,"Usually, activating a virtualenv gives you a shell function named:
 
 
@@ -4746,7 +4746,7 @@ source deactivate
 
 
 ","To deactivate a virtual environment, type `deactivate` into your terminal.
-",3.600635189529587e-235,0.0784313725490196,0.04692387904066736,0.5314398407936096,0.5752741
+"
 How do I install pip on Windows?,"Python 3.4+ and 2.7.9+
 
 
@@ -4926,7 +4926,7 @@ Christoph's site
  for your package.
 
 ","I'm sorry, I couldn't find relevant information in the provided context.
-",1.1134392944818659e-175,0.016778523489932886,0.006883496816382721,0.33811548352241516,-0.037513975
+"
 How do I parse a string to a float or int?,">>> a = ""545.2222""
 >>> float(a)
 545.22220000000004
@@ -4935,7 +4935,7 @@ How do I parse a string to a float or int?,">>> a = ""545.2222""
 
 
 ","For integers, use `int()`,  e.g., `int('144') == 144`.  For floating-point numbers, use `float()`, e.g., `float('144') == 144.0`.  These functions interpret numbers as decimal by default.  `int(string, base)` allows specifying the base for conversion.
-",0.0,0.08163265306122448,0.2036858974358974,0.4990464746952057,0.6552795
+"
 How do I get a substring of a string in Python?,">>> x = ""Hello World!""
 >>> x[2:]
 'llo World!'
@@ -4955,7 +4955,7 @@ here
  for a comprehensive introduction.
 
 ","To get a substring in Python, use string slicing.  For example, `word[0:2]` extracts characters from position 0 (included) to 2 (excluded).  Omitting the first index defaults to 0, and omitting the second defaults to the string's length.  Negative indices count from the end.
-",8.266065397495484e-232,0.08988764044943821,0.07471264367816093,0.4585281014442444,0.5064226
+"
 How do I escape curly-brace ({}) characters characters in a string while using .format?,"You need to double the 
 {{
  and 
@@ -4987,7 +4987,7 @@ Format strings contain “replacement fields” surrounded by curly braces
 
 
 ","To escape curly braces in a string using `.format()`, double them: `{{` for an opening brace and `}}` for a closing brace.
-",2.533422287750927e-156,0.14893617021276595,0.12255195559842719,0.5828723907470703,0.64497423
+"
 Check if a given key already exists in a dictionary,"in
  tests for the existence of a key in a 
 dict
@@ -5051,7 +5051,7 @@ for i in range(100):
 
 
 ","Use the `in` keyword.  `key in d` returns `True` if `d` has a key `key`, otherwise `False`.
-",1.4249542168328502e-157,0.13432835820895522,0.03480278422273782,0.47845613956451416,0.49960053
+"
 Class (static) variables and methods,"Variables declared inside the class definition, but not inside a method are class or static variables:
 
 
@@ -5105,7 +5105,7 @@ classmethod
 s over staticmethod, as the method then receives the class type as the first argument.
 
 ","I'm sorry, I couldn't find relevant information in the provided context.
-",1.238093029717986e-160,0.07547169811320754,0.025167785234899324,0.3365747332572937,-0.0057502855
+"
 How do I lowercase a string in Python?,"Use 
 str.lower()
 :
@@ -5115,7 +5115,7 @@ str.lower()
 
 
 ","Use the `lower()` method.  For example:  `str.lower()` will return a lowercase copy of the string.
-",9.257324954728539e-232,0.2857142857142857,0.4579591836734694,0.5869283676147461,0.52876794
+"
 How to check if an object has an attribute?,"Try 
 hasattr()
 :
@@ -5138,7 +5138,7 @@ hasattr
  will probably be faster than repeatedly falling into an exception block.
 
 ","Use the `hasattr(object, name)` function.  It takes an object and a string (the attribute name) and returns `True` if the attribute exists, `False` otherwise.
-",2.49998507871794e-156,0.09756097560975609,0.10242085661080076,0.516236424446106,0.5723149
+"
 How to print without a newline or space,"In Python 3, you can use the 
 sep=
  and 
@@ -5224,7 +5224,7 @@ stdout
  is flushed immediately.
 
 ","I'm sorry, I couldn't find relevant information in the provided context.
-",1.0957836564844083e-162,0.01702127659574468,0.013300674252001685,0.3336082398891449,-0.12981473
+"
 Calling a function of a module by using its name (a string),"Given a module 
 foo
  with method 
@@ -5242,7 +5242,7 @@ getattr
  can similarly be used on class instance bound methods, module-level methods, class methods... the list goes on.
 
 ","I'm sorry, I couldn't find relevant information in the provided context.
-",1.128778049395171e-232,0.0425531914893617,0.03496503496503497,0.3096638023853302,0.030860066
+"
 How can I randomly select (choose) an item from a list (get a random element)?,"Use 
 random.choice()
 :
@@ -5282,7 +5282,7 @@ print(secure_random.choice(foo))
 
 
 ","Use the `choice(S)` function, where `S` is your sequence (list).
-",8.220283194227999e-234,0.07142857142857142,0.06503568745304283,0.4838949739933014,0.30794322
+"
 How to remove an element from a list by index,"Use 
 del
  and specify the index of the element you want to delete:
@@ -5308,7 +5308,7 @@ Here
  is the section from the tutorial.
 
 ","Use `list.pop([i])` to remove the item at index `i` from the list and return it.  If no index is specified, it removes and returns the last item.  An `IndexError` is raised if the list is empty or the index is out of range.
-",3.1124401998934117e-155,0.13333333333333333,0.08442776735459663,0.4348742663860321,0.5113332
+"
 Delete a column from a Pandas DataFrame,"As you've guessed, the right syntax is 
 
 
@@ -5325,7 +5325,7 @@ df.__delitem__(name)
  under the covers by Python.
 
 ","I'm sorry, I couldn't find relevant information in the provided context.
-",1.225701556969266e-232,0.06896551724137931,0.05274261603375526,0.40783125162124634,0.06733399
+"
 How do I get the number of elements in a list (length of a list) in Python?,"The 
 len()
  function can be used with several different types in Python - both built-in types and library types. For example:
@@ -5336,7 +5336,7 @@ len()
 
 
 ","The provided text mentions `PyList_Size()` as a function to get the length of a list in Python's C API.  However, it does not describe how to obtain the length of a list within standard Python code.
-",1.0518351895246305e-231,0.125,0.10126582278481014,0.4852815866470337,0.58812773
+"
 How do I pad a string with zeros?,"To pad strings:
 
 
@@ -5369,7 +5369,7 @@ String formatting documentation
 .
 
 ","The `str.zfill()` method pads a numeric string on the left with zeros.  It handles plus and minus signs.  For example, `'12'.zfill(5)` returns `'00012'` and `'-3.14'.zfill(7)` returns `'-003.14'`.
-",0.0,0.09433962264150943,0.0441276306856755,0.5325585007667542,0.59856343
+"
 Delete an element from a dictionary,"The 
 del
  statement
@@ -5411,7 +5411,7 @@ this answer
 ).
 
 ","Use the `del` keyword.  For example: `del my_dictionary[key_to_delete]`.
-",2.3901703584869907e-238,0.0816326530612245,0.0332667997338656,0.49634748697280884,0.6451444
+"
 "What is the difference between venv, pyvenv, pyenv, virtualenv, virtualenvwrapper, pipenv, etc?","This is my personal recommendation for beginners:
  start by learning 
 virtualenv
@@ -5602,7 +5602,7 @@ venv
 
 
 ","`venv` is the standard Python tool (since Python 3.3) for creating virtual environments; since Python 3.4, it automatically installs `pip`.  `virtualenv` is a third-party alternative that predates `venv` and supports older Python versions which may lack `venv` or its automatic `pip` installation.
-",3.75141662720543e-161,0.06590257879656161,0.03260539884743706,0.5741329789161682,0.8330357
+"
 Determine the type of an object?,"There are two built-in functions that help you identify the type of an object. You can use 
 type()
   if you need the exact type of an object, and 
@@ -5698,7 +5698,7 @@ True
 
 
 ","The `type()` function returns an object's type, which is itself an object.  This type is unchangeable.
-",2.6386738291144307e-162,0.08053691275167786,0.022692889561270798,0.4948522746562958,0.5579835
+"
 How do I count the occurrences of a list item?,"If you only want a single item's count, use the 
 count
  method:
@@ -5736,7 +5736,7 @@ n
  total checks.
 
 ","Use the `list.count(x)` method.  It returns the number of times `x` appears in the list.
-",1.9419507897837107e-233,0.14583333333333334,0.0743099787685775,0.529089629650116,0.6018126
+"
 How to check if the string is empty in Python?,"Empty strings are ""falsy"" (
 python 2
  or 
@@ -5760,7 +5760,7 @@ Truth Value Testing
  for other values that are false in Boolean contexts.
 
 ","The provided text shows that `"""".splitlines()` returns an empty list `[]` for an empty string.  This can be used to check for emptiness.
-",1.2444179390854341e-232,0.125,0.12743263473053892,0.5325912833213806,0.41059676
+"
 Why is reading lines from stdin much slower in C++ than Python?,"tl;dr: Because of different default settings in C++ requiring more system calls.
 
 
@@ -5819,7 +5819,7 @@ which may be considerably faster in some cases
 
 
 ","I'm sorry, I couldn't find relevant information in the provided context.
-",4.143909548047049e-242,0.01993355481727575,0.016165535079211122,0.36697468161582947,-0.054651983
+"
 Why is it string.join(list) instead of list.join(string)?,"It's because any iterable can be joined (e.g, list, tuple, dict, set), but its contents and the ""joiner"" 
 must be
  strings.
@@ -5847,7 +5847,7 @@ TypeError: sequence item 0: expected str instance, int found
 
 
 ","Strings are immutable.  `string.join(list)` is more efficient because it avoids creating many intermediate string objects during concatenation, unlike the inefficient approach of repeatedly concatenating strings directly.
-",4.059330877540687e-232,0.09302325581395349,0.06818181818181816,0.47965651750564575,0.5316854
+"
 How do I append to a file?,"Set the mode in 
 open()
  to 
@@ -5867,7 +5867,7 @@ documentation
  lists all the available modes.
 
 ","To append to an existing file, open the file using the 'a' mode.  Any data written will be added to the end of the file.
-",1.1070482250288932e-231,0.2181818181818182,0.12048192771084337,0.5237293839454651,0.6645479
+"
 Is there a way to run Python on Android?,"One way is to use 
 Kivy
 :
@@ -5894,4 +5894,4 @@ Kivy Showcase app
  
 
 ","Yes, but only in embedded mode.  This involves writing a native Android application, embedding a Python interpreter using libpython, and invoking Python code using the Python embedding API.  There's no way to run a Python executable or interact with a Python REPL directly on Android.
-",1.0662520804273401e-231,0.12371134020618556,0.16047297297297297,0.5397860407829285,0.45658255
+"

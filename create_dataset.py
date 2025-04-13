@@ -47,7 +47,7 @@ def save_to_csv(df, filename="dataset.csv"):
     print(f"\n Saved {len(df)} entries to {filename}")
 
 def main():
-    page_max = 5
+    page_max = 10
     dataset = pd.DataFrame(columns=["question", "answer"])
 
     for page in range(1, page_max):
