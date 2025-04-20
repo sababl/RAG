@@ -4,6 +4,82 @@
     <meta charset="UTF-8">
     <title>Python RAG Assistant</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .collapsible-content.open {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .passage {
+            position: relative;
+            padding-left: 2rem;
+        }
+        .passage-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1.5rem;
+            height: 1.5rem;
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up toggle passages functionality
+            const toggleButton = document.querySelector('[data-toggle-passages]');
+            if (toggleButton) {
+                toggleButton.addEventListener('click', function() {
+                    const content = document.getElementById('passages');
+                    const arrow = document.getElementById('arrow-icon');
+                    content.classList.toggle('open');
+                    arrow.style.transform = content.classList.contains('open') ? 'rotate-180' : '';
+                });
+            }
+
+            // Format passages
+            const passagesContainer = document.getElementById('passages-container');
+            if (!passagesContainer) return;
+
+            const passagesText = document.getElementById('passages-data').textContent;
+            if (!passagesText) return;
+
+            try {
+                const passages = passagesText.split('\n\n').filter(p => p.trim());
+                
+                passagesContainer.innerHTML = passages.map((passage, index) => {
+                    const match = passage.match(/^\[(\d+)\]\s*(.*)/s);
+                    if (!match) return '';
+                    
+                    const [, , content] = match;
+                    const safeContent = content
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/`/g, '\\`');
+
+                    return `
+                        <div class="passage p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                            <div class="passage-number">${index + 1}</div>
+                            <div class="text-sm text-gray-600 whitespace-pre-line">${safeContent}</div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Error processing passages:', error);
+                passagesContainer.innerHTML = '<p class="text-red-500">Error displaying passages</p>';
+            }
+        });
+    </script>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center px-4">
     <div class="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full">
@@ -33,6 +109,26 @@
                 <div class="mt-3 p-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 whitespace-pre-line">
                     {{ answer }}
                 </div>
+                
+                {% if passages %}
+                    <div class="mt-4">
+                        <button
+                            data-toggle-passages
+                            class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-2"
+                        >
+                            <svg id="arrow-icon" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                            Show source documents
+                        </button>
+                        <div id="passages" class="collapsible-content mt-2">
+                            <script type="text/plain" id="passages-data">{{ passages | safe }}</script>
+                            <div id="passages-container" class="space-y-3">
+                                <!-- Passages will be inserted here by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         {% endif %}
     </div>

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 from fastapi import FastAPI, Form, Request, HTTPException
 from fastapi.responses import HTMLResponse
@@ -28,7 +28,8 @@ async def read_form(request: Request) -> HTMLResponse:
         context={
             "request": request,
             "answer": None,
-            "question": None
+            "question": None,
+            "passages": None
         }
     )
 
@@ -55,17 +56,26 @@ async def handle_form(
         if not question.strip():
             raise ValueError("Question cannot be empty")
 
-        answer = answer_question(question)
+        answer, passages = answer_question(question)
         
         if not answer:
             raise ValueError("Could not generate an answer")
+
+        # Debug logging
+        print("Answer:", answer)
+        print("Passages:", passages)
+
+        # Escape any potential JavaScript in the content
+        answer = str(answer).replace('`', '\\`')
+        passages = str(passages).replace('`', '\\`')
 
         return templates.TemplateResponse(
             name="index.html",
             context={
                 "request": request,
                 "answer": answer,
-                "question": question
+                "question": question,
+                "passages": passages
             }
         )
 

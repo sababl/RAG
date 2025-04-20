@@ -99,6 +99,21 @@ def generate_answer(question: str, context: List[str]) -> str:
     You are an expert Python programming assistant.
     Answer the user's question clearly, accurately, and concisely based **only** on the provided context.
     If the context doesn't contain the necessary information, reply "I'm sorry, I couldn't find relevant information in the provided context."
+    
+    Format your response in two parts:
+    1. First provide the answer without any citations
+    2. Then add a "References:" section at the end that lists which passages (1-3) were used
+    
+    Example format:
+    Answer: The explanation of the concept...
+
+    References: [1, 2]
+
+    Important:
+    - Only use passage numbers 1-3
+    - Don't include citations in the main answer text
+    - List all used passages in the References section
+    - If a passage wasn't used, don't list it in References
 
     Question: {question}
 
@@ -109,7 +124,7 @@ def generate_answer(question: str, context: List[str]) -> str:
     response = model.generate_content(prompt)
     return response.text
 
-def answer_question(user_question: str) -> str:
+def answer_question(user_question: str) -> tuple[str, str]:
     """
     Process user question and return answer using RAG.
 
@@ -117,7 +132,7 @@ def answer_question(user_question: str) -> str:
         user_question (str): User's Python-related question
 
     Returns:
-        str: Answer to the question
+        tuple[str, str]: Tuple containing (answer, passages)
     """
     try:
         embed_fn = GeminiEmbeddingFunction()
@@ -128,11 +143,11 @@ def answer_question(user_question: str) -> str:
             n_results=N_RESULTS
         )
         passages = results["documents"][0]
-        
-        return generate_answer(user_question, passages)
+        passages_text = "\n\n".join(f"[{i+1}] {p}" for i, p in enumerate(passages))
+        return generate_answer(user_question, passages_text), passages_text
 
     except Exception as e:
-        return f"Error processing question: {str(e)}"
+        return f"Error processing question: {str(e)}", ""
 
 # Initialize system
 init_environment()
