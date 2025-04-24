@@ -3,6 +3,8 @@ from chromadb import Documents, EmbeddingFunction, Embeddings
 from google.api_core import retry
 import google.generativeai as genai
 import fitz
+import torch
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 
 class GeminiEmbeddingFunction(EmbeddingFunction):
@@ -98,3 +100,49 @@ def chunk_text(text: str, chunk_size: int = 500, overlap: int = 50) -> List[str]
         chunks.append(current_chunk.strip())
 
     return chunks
+
+
+class BGEReranker:
+    """
+    Reranker using BGE model to rerank retrieved passages.
+    """
+    def __init__(self):
+        self.tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-reranker-large')
+        self.model = AutoModelForSequenceClassification.from_pretrained('BAAI/bge-reranker-large')
+        if torch.cuda.is_available():
+            self.model = self.model.cuda()
+        self.model.eval()
+
+    def rerank(self, query: str, passages: List[str], top_k: int = None) -> List[tuple[str, float]]:
+        """
+        Rerank passages using the BGE reranker model.
+
+        Args:
+            query (str): The search query
+            passages (List[str]): List of passages to rerank
+            top_k (int, optional): Number of top passages to return. If None, returns all reranked.
+
+        Returns:
+            List[tuple[str, float]]: List of (passage, score) tuples, sorted by score descending
+        """
+        pairs = [[query, passage] for passage in passages]
+        with torch.no_grad():
+            inputs = self.tokenizer(
+                pairs,
+                padding=True,
+                truncation=True,
+                return_tensors='pt',
+                max_length=512
+            )
+            if torch.cuda.is_available():
+                inputs = {k: v.cuda() for k, v in inputs.items()}
+            scores = self.model(**inputs).logits.squeeze()
+            scores = torch.sigmoid(scores).cpu().numpy()
+
+        ranked_results = list(zip(passages, scores))
+        ranked_results.sort(key=lambda x: x[1], reverse=True)
+        
+        if top_k:
+            ranked_results = ranked_results[:top_k]
+            
+        return ranked_results

@@ -1,5 +1,5 @@
 import os
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import google.generativeai as genai
 import chromadb
@@ -7,14 +7,14 @@ from chromadb.config import Settings
 
 from dotenv import load_dotenv
 
-from embedding import GeminiEmbeddingFunction, extract_text_from_pdf, chunk_text
+from embedding import GeminiEmbeddingFunction, extract_text_from_pdf, chunk_text, BGEReranker
 
 # Constants
 PDF_FOLDER = "docs-pdf"
 DB_NAME = "pydocs_db"
 
 N_RESULTS = 3
-MODEL_NAME = "gemini-1.5-flash-latest"
+MODEL_NAME = "gemini-2.0-flash"
 
 doc_id_counter = 0 
 
@@ -136,13 +136,20 @@ def answer_question(user_question: str) -> tuple[str, str]:
     """
     try:
         embed_fn = GeminiEmbeddingFunction()
+        reranker = BGEReranker()
 
+        # Initial retrieval with embeddings
         embed_fn.document_mode = False
         results = db.query(
             query_texts=[user_question],
-            n_results=N_RESULTS
+            n_results=N_RESULTS * 2  # Retrieve more passages for reranking
         )
         passages = results["documents"][0]
+
+        # Rerank passages
+        reranked_passages = reranker.rerank(user_question, passages, top_k=N_RESULTS)
+        passages = [p[0] for p in reranked_passages]  # Extract just the passages, dropping scores
+        
         passages_text = "\n\n".join(f"[{i+1}] {p}" for i, p in enumerate(passages))
         return generate_answer(user_question, passages_text), passages_text
 
