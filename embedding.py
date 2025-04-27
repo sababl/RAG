@@ -62,7 +62,7 @@ def extract_text_from_pdf(pdf_path: str) -> str:
     return "\n".join(pages_text)
 
 
-def chunk_text(text: str, chunk_size: int = 500, overlap: int = 50) -> List[str]:
+def chunk_text(text: str, chunk_size: int = 100, overlap: int = 10) -> List[str]:
     """
     Splits the input text into chunks of a specified maximum size with a given overlap.
 

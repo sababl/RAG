@@ -118,13 +118,13 @@ def evaluate_answers(input_csv, output_scores_csv, output_averages_csv):
     print("\nFinal Average Scores:\n", averages_df)
 
 if __name__ == "__main__":
-    # generate_evaluation_csv(
-    # input_csv="dataset.csv",
-    # output_csv="evaluation_results.csv"
-    # )
+    generate_evaluation_csv(
+    input_csv="dataset.csv",
+    output_csv="results/evaluation_results.csv"
+    )
 
     evaluate_answers(
-        input_csv="evaluation_results.csv",
-        output_scores_csv="final_evaluation_scores.csv",
-        output_averages_csv="average_scores.csv"
+        input_csv="results/evaluation_results.csv",
+        output_scores_csv="results/final_evaluation_scores.csv",
+        output_averages_csv="results/average_scores.csv"
     )
