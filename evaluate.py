@@ -1,31 +1,53 @@
+"""
+Evaluation module for RAG system performance.
+
+This module provides utilities for evaluating the quality of RAG-generated answers
+against expected answers using various NLP metrics.
+"""
+
 import time
+from typing import Dict, List, Any, Tuple
+
 import pandas as pd
+import nltk
+from tqdm import tqdm
 from nltk.translate.bleu_score import sentence_bleu
-from rouge_score import rouge_scorer
 from nltk.translate.meteor_score import meteor_score
 from nltk.tokenize import word_tokenize
+from rouge_score import rouge_scorer
 from bert_score import score
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
-from tqdm import tqdm
-import nltk
 
-from main import answer_question 
+from main import answer_question
+from config import MODEL_NAME
 
-nltk.download('wordnet')
-nltk.download('omw-1.4')
-nltk.download('punkt')
+# Download required NLTK resources
+nltk.download('wordnet', quiet=True)
+nltk.download('omw-1.4', quiet=True)
+nltk.download('punkt', quiet=True)
 
+# Initialize embedding model for semantic similarity
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
-def generate_evaluation_csv(input_csv, output_csv):
+
+def generate_evaluation_csv(input_csv: str, output_csv: str) -> None:
     """
-    1. Reads 'dataset.csv' containing columns [question, answer].
-    2. For each row, calls answer_question() to get a generated answer.
-    3. Writes out a new CSV with columns [question, expected, generated].
+    Generate evaluation data by running RAG on a set of questions.
+
+    Args:
+        input_csv (str): Path to input CSV with 'question' and 'answer' columns
+        output_csv (str): Path to output CSV where results will be stored
+    
+    Raises:
+        FileNotFoundError: If input_csv doesn't exist
+        KeyError: If input_csv doesn't have required columns
     """
     # Load the dataset
     df = pd.read_csv(input_csv)
+
+    if 'question' not in df.columns or 'answer' not in df.columns:
+        raise KeyError("Input CSV must contain 'question' and 'answer' columns")
 
     # Prepare a list to store results
     results = []
@@ -38,7 +60,7 @@ def generate_evaluation_csv(input_csv, output_csv):
         print(f"Generating answer for question #{idx+1}: {question}")
 
         # Call the RAG-based function from main.py
-        generated_answer = answer_question(question)
+        generated_answer, _ = answer_question(question)
         time.sleep(5)  # Add a delay to avoid rate limits
         results.append({
             "question": question,
@@ -54,13 +76,41 @@ def generate_evaluation_csv(input_csv, output_csv):
     print(f"\nCreated CSV with {len(results_df)} rows: {output_csv}")
 
 
-def calculate_cosine_similarity(sentence1, sentence2):
+def calculate_cosine_similarity(sentence1: str, sentence2: str) -> float:
+    """
+    Calculate cosine similarity between two sentences using embeddings.
+    
+    Args:
+        sentence1 (str): First sentence
+        sentence2 (str): Second sentence
+        
+    Returns:
+        float: Cosine similarity score between 0 and 1
+    """
     embeddings = model.encode([sentence1, sentence2])
     cos_sim = cosine_similarity([embeddings[0]], [embeddings[1]])[0][0]
     return cos_sim
 
-def evaluate_answers(input_csv, output_scores_csv, output_averages_csv):
+
+def evaluate_answers(input_csv: str, output_scores_csv: str, output_averages_csv: str) -> Dict[str, float]:
+    """
+    Evaluate the quality of generated answers using multiple metrics.
+    
+    Args:
+        input_csv (str): Path to CSV with questions, expected and generated answers
+        output_scores_csv (str): Path to save per-item scores
+        output_averages_csv (str): Path to save average scores
+        
+    Returns:
+        Dict[str, float]: Dictionary of average scores for each metric
+        
+    Raises:
+        FileNotFoundError: If input_csv doesn't exist
+    """
     df = pd.read_csv(input_csv)
+    
+    if any(col not in df.columns for col in ['question', 'expected', 'generated']):
+        raise KeyError("Input CSV must contain 'question', 'expected', and 'generated' columns")
 
     results = []
 
@@ -115,12 +165,15 @@ def evaluate_answers(input_csv, output_scores_csv, output_averages_csv):
     averages_df = pd.DataFrame([averages])
     averages_df.to_csv(output_averages_csv, index=False)
     print(f"Average scores saved to {output_averages_csv}")
-    print("\nFinal Average Scores:\n", averages_df)
+    print(f"\nFinal Average Scores for model {MODEL_NAME}:\n", averages_df)
+    
+    return averages
+
 
 if __name__ == "__main__":
     generate_evaluation_csv(
-    input_csv="dataset.csv",
-    output_csv="results/evaluation_results.csv"
+        input_csv="dataset.csv",
+        output_csv="results/evaluation_results.csv"
     )
 
     evaluate_answers(

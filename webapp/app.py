@@ -1,14 +1,33 @@
-from typing import Optional, Tuple
+"""
+Web interface for the RAG (Retrieval-Augmented Generation) application.
+
+This module provides a FastAPI web application that allows users to interact with
+the RAG question-answering system through a simple web interface.
+"""
+
+from typing import Optional, Tuple, Dict, Any
 
 from fastapi import FastAPI, Form, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
+import sys
+import os
+
+# Add parent directory to path to import from main module
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from main import answer_question
+from config import MODEL_NAME
 
+# Initialize FastAPI app
+app = FastAPI(
+    title="Python Documentation RAG Assistant",
+    description="A retrieval-augmented generation system for Python documentation Q&A",
+    version="1.0.0"
+)
 
-app = FastAPI()
+# Setup templates
 templates = Jinja2Templates(directory="webapp/templates")
 
 
@@ -29,7 +48,8 @@ async def read_form(request: Request) -> HTMLResponse:
             "request": request,
             "answer": None,
             "question": None,
-            "passages": None
+            "passages": None,
+            "model_name": MODEL_NAME
         }
     )
 
@@ -61,10 +81,6 @@ async def handle_form(
         if not answer:
             raise ValueError("Could not generate an answer")
 
-        # Debug logging
-        print("Answer:", answer)
-        print("Passages:", passages)
-
         # Escape any potential JavaScript in the content
         answer = str(answer).replace('`', '\\`')
         passages = str(passages).replace('`', '\\`')
@@ -75,7 +91,8 @@ async def handle_form(
                 "request": request,
                 "answer": answer,
                 "question": question,
-                "passages": passages
+                "passages": passages,
+                "model_name": MODEL_NAME
             }
         )
 
@@ -88,4 +105,9 @@ async def handle_form(
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(
+        app, 
+        host="0.0.0.0", 
+        port=8000,
+        log_level="info"
+    )
