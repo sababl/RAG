@@ -11,14 +11,18 @@ from fastapi import FastAPI, Form, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from dotenv import load_dotenv
 
 import sys
 import os
 
+load_dotenv()
+MODEL_NAME = os.getenv("MODEL_NAME", "Default Model")
+
+
 # Add parent directory to path to import from main module
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from main import answer_question
-from config import MODEL_NAME
 
 # Initialize FastAPI app
 app = FastAPI(

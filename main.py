@@ -24,7 +24,7 @@ load_dotenv()
 PDF_FOLDER = os.getenv("PDF_FOLDER", "docs-pdf")
 CHROMA_STORAGE_PATH = os.getenv("CHROMA_STORAGE_PATH", "./chroma_storage")
 DB_NAME = os.getenv("DB_NAME", "pydocs_db")
-CHUNK_BATCH_SIZE = int(os.getenv("CHUNK_BATCH_SIZE", "40000"))
+CHUNK_BATCH_SIZE = int(os.getenv("CHUNK_BATCH_SIZE", "4000"))
 MODEL_NAME = os.getenv("MODEL_NAME", "gemini-2.0-flash")
 N_RESULTS = int(os.getenv("N_RESULTS", "3"))
 
